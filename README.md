@@ -17,7 +17,7 @@ tidbyt_token: 123456
 ```
 
 Tidbyt.yaml:
-You will have to edit <user> which is the user that will log into your Pixlet server (aka wherever you install the Pixlet app) and the <ip> of said server. Also edit the path where you put the contents of TidbytAssistant. Basically the shell command is logging in as a user, and running the TidbytDisplay.sh script with the required arguments. 
+You will have to edit the user which is the user that will log into your Pixlet server (aka wherever you install the Pixlet app) and the ip of said server. Also edit the path where you put the contents of TidbytAssistant. Basically the shell command is logging in as a user, and running the TidbytDisplay.sh script with the required arguments. 
 
 Tidbyt.yaml automatically creates the script for you, so you can call it in your automations and user the dropdown to select what you want to notify and select the devices. You might have to remove some of the conditions if you have less Tidbyts (I have 3, so three conditions, one for each device). Add more if you have more. Just be sure to reference the correct device_id and token for each condition.
 
