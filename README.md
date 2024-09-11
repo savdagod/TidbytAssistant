@@ -12,14 +12,28 @@ https://github.com/savdagod/ha-addons
 4. In HomeAssistant, navigate to your configuration.yaml and add the following to the bottom:
 ```txt
 tidbytassistant:
-  - name: your device name
-    deviceid: device_id_from_previous_step
-    token: key_from_previous_step
-  - name: another device name
-    ...
+  devices:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+    - name: another device name
+      ...
 ```
 5. You can add as many devices as you want. Be sure to give each a unique name, you will be using this name when calling the action.
 6. Restart HomeAssistant.
 7. Once HomeAssistant restarts, you should now have a action called TidbytAssistant: Push. Use this in your automations to send notifiations.
 
 As of now, there are only a hadnful of animations available. I plan to update this integration/add-on so that users can also use their own .star files. 
+
+By default, this integration sends the request on port 9000. If for some reason that port is in use, you can change it in the add-on configuration. Be sure to also change it in your configuration.yaml like so:
+```txt
+tidbytassistant:
+  port: 5000
+  devices:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+    - name: another device name
+      ...
+```
+
