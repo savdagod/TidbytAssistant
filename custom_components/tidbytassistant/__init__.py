@@ -39,7 +39,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     def pixlet_push(call: ServiceCall) -> None:
         """Handle the service action call."""
         url = f"http://localhost:{port}/hooks/tidbyt-display"
-        content = call.data.get(ATTR_CONTENT, DEFAULT_CONTENT)
+        content = call.data.get(ATTR_CONTENT)
         devicename = call.data.get(ATTR_DEVICENANME)
         data = config[DOMAIN]
         devicefound = False
