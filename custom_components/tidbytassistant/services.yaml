@@ -1,0 +1,34 @@
+push:
+  name: Push
+  fields:
+    content:
+      name: Content
+      description: "The content you want displayed on the Tidbyt."
+      required: true
+      selector:
+        select:
+          options:
+            - label: Washer
+              value: washer
+            - label: Dryer
+              value: dryer
+            - label: Dishwasher
+              value: dishwasher
+            - label: Coffee Maker
+              value: coffee
+            - label: Doorbell
+              value: doorbell
+            - label: HVAC Filters
+              value: filters
+            - label: Close Fridge
+              value: fridge
+            - label: Trash Day
+              value: trash
+            - label: Trash & Recycling Day
+              value: TrashRecycle
+    devicename:
+      name: Device Name
+      description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to mytidbyt then enter mytidbyt here."
+      required: true
+      selector:
+        text:
