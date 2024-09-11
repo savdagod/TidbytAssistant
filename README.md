@@ -23,7 +23,8 @@ tidbytassistant:
 6. Restart HomeAssistant.
 7. Once HomeAssistant restarts, you should now have a action called TidbytAssistant: Push. Use this in your automations to send notifiations.
 
-As of now, there are only a hadnful of animations available. I plan to update this integration/add-on so that users can also use their own .star files. 
+## Pushing your own files
+Coming soon...
 
 
 ## Things to note
