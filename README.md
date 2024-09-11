@@ -25,6 +25,8 @@ tidbytassistant:
 
 As of now, there are only a hadnful of animations available. I plan to update this integration/add-on so that users can also use their own .star files. 
 
+
+### Things to note
 By default, this integration sends the request on port 9000. If for some reason that port is in use, you can change it in the add-on configuration. Be sure to also change it in your configuration.yaml like so:
 ```txt
 tidbytassistant:
@@ -37,3 +39,18 @@ tidbytassistant:
       ...
 ```
 
+I also recommend that you use the secrets.yaml file to store your ID and Key. Add these to secrets.yaml"
+```txt
+tidbyt_id: super_secret_id
+tidbyt_key: super_secret_key
+```
+Then your configuration will look like this:
+```txt
+tidbytassistant:
+  devices:
+    - name: your device name
+      deviceid: !secret tidbyt_id
+      token: !secret tidbyt_key
+    - name: another device name
+      ...
+```
