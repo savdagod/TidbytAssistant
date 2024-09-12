@@ -52,3 +52,24 @@ push:
       required: true
       selector:
         text:
+publish:
+  name: Publish
+  fields:
+    content:
+      name: Content
+      description: "Type the name of the custom content you want to add to your regular app rotation. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here."
+      required: true
+      selector:
+        text:
+    contentid:
+      name: Content ID
+      description: "A unique name for your app."
+      required: true
+      selector:
+        text:
+    devicename:
+      name: Device Name
+      description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
+      required: true
+      selector:
+        text:
