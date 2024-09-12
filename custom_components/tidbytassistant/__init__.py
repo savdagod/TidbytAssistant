@@ -1,7 +1,7 @@
 import logging
 import requests
 from typing import Dict
-from .const import DOMAIN, CONF_DEVICE, CONF_TOKEN, CONF_ID, CONF_PORT, CONF_NAME, ATTR_CONTENT, ATTR_DEVICENANME
+from .const import DOMAIN, CONF_DEVICE, CONF_TOKEN, CONF_ID, CONF_PORT, CONF_NAME, ATTR_CONTENT, ATTR_DEVICENANME, ATTR_CONT_TYPE, ATTR_CUSTOM_CONT
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.exceptions import HomeAssistantError
@@ -38,8 +38,17 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     
     def pixlet_push(call: ServiceCall) -> None:
         """Handle the service action call."""
+        
         url = f"http://localhost:{port}/hooks/tidbyt-display"
-        content = call.data.get(ATTR_CONTENT)
+        contenttype = call.data.get(ATTR_CONT_TYPE)
+        match contenttype:
+            case "builtin":
+                content = call.data.get(ATTR_CONTENT)
+            case "custom":
+                content = call.data.get(ATTR_CUSTOM_CONT)
+            case "text":
+                content = call.data.get(ATTR_CUSTOM_CONT)
+
         devicename = call.data.get(ATTR_DEVICENANME)
         data = config[DOMAIN]
         devicefound = False
@@ -57,8 +66,11 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             valid_names = valid_names[:-2]
             raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
         else:  
-            todo = {"content": content, "token": token, "deviceid": deviceid}
-            response = requests.post(url, json=todo)
+            todo = {"content": content, "token": token, "deviceid": deviceid, "contenttype": contenttype}
+            try:
+                response = requests.post(url, json=todo)
+            except:
+                raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
 
     hass.services.register(DOMAIN, "Push", pixlet_push)
 
