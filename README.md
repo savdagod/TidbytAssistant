@@ -28,6 +28,11 @@ tidbytassistant:
 7. Once HomeAssistant restarts, you should now have an action called TidbytAssistant: Push. Use this in your automations to send notifiations.
 
 ## Features
+### Pushing built-in notifications
+1. Select the radio button for *Built-in*.
+2. Use the *Content* dropdown to select from the built in notifications. These are apps that I have built that have little animations for notifications.
+3. Type out your device name and run the action.
+
 ### Pushing text
 1. Select the radio buttom for *Text*
 2. In the *Custom Content* box, enter the text you want displayed.
