@@ -16,7 +16,7 @@ I also highly recommend installing the ***Studio Code Server*** and ***Samba*** 
 4. In HomeAssistant, navigate to your **configuration.yaml** and add the following to the bottom:
 ```txt
 tidbytassistant:
-  devices:
+  device:
     - name: your device name
       deviceid: device_id_from_previous_step
       token: key_from_previous_step
@@ -49,7 +49,7 @@ By default, this integration sends the request on port 9000. If for some reason 
 ```txt
 tidbytassistant:
   port: 5000
-  devices:
+  device:
     - name: your device name
       deviceid: device_id_from_previous_step
       token: key_from_previous_step
@@ -66,7 +66,7 @@ tidbyt_key: key_from_previous_step
 Then your configuration will look like this:
 ```txt
 tidbytassistant:
-  devices:
+  device:
     - name: your device name
       deviceid: !secret tidbyt_id
       token: !secret tidbyt_key
