@@ -25,7 +25,7 @@ tidbytassistant:
 ```
 5. You can add as many devices as you want. Be sure to give each a unique name, you will be using this name when calling the action.
 6. Restart HomeAssistant.
-7. Once HomeAssistant restarts, you should now have a action called TidbytAssistant: Push. Use this in your automations to send notifiations.
+7. Once HomeAssistant restarts, you should now have an action called TidbytAssistant: Push. Use this in your automations to send notifiations.
 
 ## Features
 ### Pushing text
