@@ -27,13 +27,16 @@ tidbytassistant:
 6. Restart HomeAssistant.
 7. Once HomeAssistant restarts, you should now have a action called TidbytAssistant: Push. Use this in your automations to send notifiations.
 
-## Pushing your own files
-*Note: this feature has not been implemented yet*
+## Features
+### Pushing text
+1. Select the radio buttom for *Text*
+2. In the *Custom Content* box, enter the text you want displayed.
+3. Enter your device name and run the action. You should see your text scrolling across the screen.
 
+### Pushing your own files
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
-3. Now when calling the action, select the radio button for "Custom". In the Custom Content text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
-
+3. Now when calling the action, select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 
 ## Things to note
 ### Changing Ports
