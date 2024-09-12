@@ -6,10 +6,10 @@ https://github.com/savdagod/ha-addons
 ```
 
 ### Configuration
-1. Copy the tidbytassistant folder to your custom_components folder and restart HomeAssistant
+1. Copy the **tidbytassistant** folder to your **custom_components** folder and restart HomeAssistant
 2. To add your Tidbyt device, open the Tidbyt app. Navigate to the device you want to add, click the settings icon at the top right then navigate to the Developer tab.
 3. Tap on Get API key. Here you will see a Device ID and Key. This is what you will use to set up the integration.
-4. In HomeAssistant, navigate to your configuration.yaml and add the following to the bottom:
+4. In HomeAssistant, navigate to your **configuration.yaml** and add the following to the bottom:
 ```txt
 tidbytassistant:
   devices:
@@ -26,9 +26,9 @@ tidbytassistant:
 ## Pushing your own files
 Note: this feature has not been implemented yet
 
-1. Create a folder in your /config directory called tidbyt.
+1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
-3. Now when calling the action, select the radio button for "Custom". In the Custom Content text box, enter the file name minus the '.star'. Example: if your file is named 'custom.star', you will enter 'custom' in the field.
+3. Now when calling the action, select the radio button for "Custom". In the Custom Content text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 
 
 ## Things to note
