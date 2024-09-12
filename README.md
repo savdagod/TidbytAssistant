@@ -5,8 +5,20 @@ Display notifications from HomeAssistant to Tidbyt using this integration. You m
 https://github.com/savdagod/ha-addons
 ```
 
+I also highly recommend downloading the following add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier.
+
+To copy files easier install Samba:
+```txt
+https://github.com/home-assistant/addons/blob/master/samba
+```
+
+To edit your **configuration.yaml** easily:
+```txt
+https://github.com/hassio-addons/addon-vscode
+```
+
 ### Configuration
-1. Copy the **tidbytassistant** folder to your **custom_components** folder and restart HomeAssistant
+1. Copy the **tidbytassistant** folder to your **custom_components** folder and restart HomeAssistant.
 2. To add your Tidbyt device, open the Tidbyt app. Navigate to the device you want to add, click the settings icon at the top right then navigate to the Developer tab.
 3. Tap on Get API key. Here you will see a Device ID and Key. This is what you will use to set up the integration.
 4. In HomeAssistant, navigate to your **configuration.yaml** and add the following to the bottom:
