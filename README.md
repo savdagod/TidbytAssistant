@@ -29,20 +29,31 @@ tidbytassistant:
 
 ## Features
 ### Pushing built-in notifications
+#### Use the action TidbytAssistant: Push
 1. Select the radio button for *Built-in*.
 2. Use the *Content* dropdown to select from the built in notifications. These are apps that I have built that have little animations for notifications.
 3. Type out your device name and run the action.
 
 ### Pushing text
+#### Use the action TidbytAssistant: Push
 1. Select the radio buttom for *Text*
 2. In the *Custom Content* box, enter the text you want displayed.
 3. Enter your device name and run the action. You should see your text scrolling across the screen.
 
 ### Pushing your own files
+#### Use the action TidbytAssistant: Push
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
-3. Now when calling the action, select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
+3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 
+### Adding app to your regular app rotation
+#### Use the action TidbytAssistant: Publish
+1. Create a folder in your **/config** directory called **tidbyt**.
+2. Place your .star file(s) in this folder.
+3. In the *Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
+4. Enter a unique name in the *Content ID* field.
+5. Enter your device name. Run the action to add your app to your app rotation.
+   
 ## Things to note
 ### Changing Ports
 By default, this integration sends the request on port 9000. If for some reason that port is in use, you can change it in the add-on configuration. Be sure to also change it in your configuration.yaml like so:
