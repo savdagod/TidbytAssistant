@@ -24,7 +24,11 @@ tidbytassistant:
 7. Once HomeAssistant restarts, you should now have a action called TidbytAssistant: Push. Use this in your automations to send notifiations.
 
 ## Pushing your own files
-Coming soon...
+Note: this feature has not been implemented yet
+
+1. Create a folder in your /config directory called tidbyt.
+2. Place your .star file in this folder.
+3. Now when calling the action, select the radio button for "Custom". In the Custom Content text box, enter the file name minus the '.star'. Example: if your file is named 'custom.star', you will enter 'custom' in the field.
 
 
 ## Things to note
