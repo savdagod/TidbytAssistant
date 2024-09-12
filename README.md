@@ -5,7 +5,7 @@ Display notifications from HomeAssistant to Tidbyt using this integration. You m
 https://github.com/savdagod/ha-addons
 ```
 
-I also highly recommend downloading the following add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier.
+I also highly recommend installing the following add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier.
 
 To copy files easier install Samba:
 ```txt
