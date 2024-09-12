@@ -5,17 +5,9 @@ Display notifications from HomeAssistant to Tidbyt using this integration. You m
 https://github.com/savdagod/ha-addons
 ```
 
-I also highly recommend installing the following add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier.
+I also highly recommend installing the ***Studio Code Server*** and ***samba*** add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier. ***Samba*** is part of the official addons and ***Studio Code Server*** is part of the HomeAssistant community add-ons.
 
-To copy files easier install Samba:
-```txt
-https://github.com/home-assistant/addons/blob/master/samba
-```
 
-To edit your **configuration.yaml** easily:
-```txt
-https://github.com/hassio-addons/addon-vscode
-```
 
 ### Configuration
 1. Copy the **tidbytassistant** folder to your **custom_components** folder and restart HomeAssistant.
