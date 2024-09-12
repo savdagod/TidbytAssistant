@@ -27,7 +27,7 @@ tidbytassistant:
 Note: this feature has not been implemented yet
 
 1. Create a folder in your /config directory called tidbyt.
-2. Place your .star file in this folder.
+2. Place your .star file(s) in this folder.
 3. Now when calling the action, select the radio button for "Custom". In the Custom Content text box, enter the file name minus the '.star'. Example: if your file is named 'custom.star', you will enter 'custom' in the field.
 
 
@@ -46,7 +46,7 @@ tidbytassistant:
 ```
 
 ### Using secrets file
-I also recommend that you use the secrets.yaml file to store your ID and Key. Add these to secrets.yaml"
+I also recommend that you use the secrets.yaml file to store your ID and Key. Add these to secrets.yaml:
 ```txt
 tidbyt_id: device_id_from_previous_step
 tidbyt_key: key_from_previous_step
