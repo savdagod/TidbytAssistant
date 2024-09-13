@@ -1,7 +1,7 @@
 import logging
 import requests
 from typing import Dict
-from .const import DOMAIN, CONF_DEVICE, CONF_TOKEN, CONF_ID, CONF_PORT, CONF_NAME, ATTR_CONTENT, ATTR_CONTENT_ID, ATTR_DEVICENANME, ATTR_CONT_TYPE, ATTR_CUSTOM_CONT
+from .const import DOMAIN, CONF_DEVICE, CONF_TOKEN, CONF_ID, CONF_PORT, CONF_NAME, ATTR_CONTENT, ATTR_CONTENT_ID, ATTR_DEVICENANME, ATTR_CONT_TYPE, ATTR_CUSTOM_CONT, ATTR_TEXT_TYPE, ATTR_FONT
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.exceptions import HomeAssistantError
@@ -39,14 +39,12 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     def pixlet_push(call: ServiceCall) -> None:
         """Handle the service action call."""
         
-        url = f"http://localhost:{port}/hooks/tidbyt-display"
+        url = f"http://localhost:{port}/hooks/tidbyt-push"
         contenttype = call.data.get(ATTR_CONT_TYPE)
         match contenttype:
             case "builtin":
                 content = call.data.get(ATTR_CONTENT)
             case "custom":
-                content = call.data.get(ATTR_CUSTOM_CONT)
-            case "text":
                 content = call.data.get(ATTR_CUSTOM_CONT)
 
         devicename = call.data.get(ATTR_DEVICENANME)
@@ -100,8 +98,41 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 response = requests.post(url, json=todo)
             except:
                 raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+    
+    def pixlet_text(call: ServiceCall) -> None:
+        """Handle the service action call."""
+        
+        url = f"http://localhost:{port}/hooks/tidbyt-text"
+        content = call.data.get(ATTR_CONTENT)
+        texttype = call.data.get(ATTR_TEXT_TYPE)
+        devicename = call.data.get(ATTR_DEVICENANME)
+        font = call.data.get(ATTR_FONT)
+
+        data = config[DOMAIN]
+        devicefound = False
+        for item in data[CONF_DEVICE]:
+            if item[CONF_NAME] == devicename:
+                token = item[CONF_TOKEN]
+                deviceid = item[CONF_ID]
+                devicefound = True
+                break
+        if devicefound is False:
+            valid_names = ""
+            for item in data[CONF_DEVICE]:
+                vname = item[CONF_NAME]
+                valid_names += vname + ", "
+            valid_names = valid_names[:-2]
+            raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
+        else:  
+            todo = {"content": content, "texttype": texttype, "font": font, "token": token, "deviceid": deviceid}
+            try:
+                response = requests.post(url, json=todo)
+            except:
+                raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+    
     hass.services.register(DOMAIN, "Push", pixlet_push)
     hass.services.register(DOMAIN, "Publish", pixlet_publish)
+    hass.services.register(DOMAIN, "Text", pixlet_text)
 
     # Return boolean to indicate that initialization was successful.
     return True

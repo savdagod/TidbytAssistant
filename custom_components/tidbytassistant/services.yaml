@@ -28,7 +28,7 @@ push:
               value: TrashRecycle
     customcontent:
       name: Custom Content
-      description: "Type the name of the custom content you want to display. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here. For text content, type in the text you want displayed."
+      description: "Type the name of the custom content you want to display. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here."
       required: false
       selector:
         text:
@@ -44,8 +44,6 @@ push:
               value: builtin
             - label: Custom
               value: custom
-            - label: Text
-              value: text
     devicename:
       name: Device Name
       description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
@@ -67,6 +65,48 @@ publish:
       required: true
       selector:
         text:
+    devicename:
+      name: Device Name
+      description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
+      required: true
+      selector:
+        text:
+text:
+  name: Text
+  fields:
+    content:
+      name: Content
+      description: "Type the name of the text you want displayed."
+      required: true
+      selector:
+        text:
+    texttype:
+      name: Text Type
+      description: "How you want the text diaplyed."
+      required: true
+      selector:
+        select:
+          options:
+            - label: Regular
+              value: regular
+            - label: Scrolling
+              value: scrolling
+    font:
+      name: Font
+      description: "Font for the text."
+      required: false
+      default: "tb-8"
+      selector:
+        select:
+          options:
+              - tb-8
+              - Dina_r400-6
+              - 5x8
+              - 6x13
+              - 10x20
+              - tom-thumb
+              - CG-pixel-3x5-mono
+              - CG-pixel-4x5-mono
     devicename:
       name: Device Name
       description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
