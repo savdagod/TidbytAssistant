@@ -1,4 +1,4 @@
-<p align="left">
+<p align="center">
   <img src="https://raw.githubusercontent.com/savdagod/TidbytAssistant/main/logo.png">
 </p>
 Display notifications from HomeAssistant to Tidbyt using this integration. You must also install the TidbytAssistant add-on which can be found here:
