@@ -3,6 +3,13 @@
 </p>
 
 
+
+
+
+
+
+
+
 Display notifications from HomeAssistant to Tidbyt using this integration. You must also install the TidbytAssistant add-on which can be found here:
 
 ```txt
