@@ -94,7 +94,7 @@ text:
     font:
       name: Font
       description: "Font for the text."
-      required: false
+      required: true
       default: "tb-8"
       selector:
         select:
@@ -107,6 +107,28 @@ text:
               - tom-thumb
               - CG-pixel-3x5-mono
               - CG-pixel-4x5-mono
+    color:
+      name: Color
+      description: "Font color for the text."
+      required: true
+      default: "#fff"
+      selector:
+        select:
+          options:
+              - label: White
+                value: "#fff"
+              - label: Blue
+                value: "#00f"
+              - label: Red
+                value: "#f00"
+              - label: Green
+                value: "#090"
+              - label: Yellow
+                value: "#ff0"
+              - label: Cyan
+                value: "#0ff"
+              - label: Lime
+                value: "#0f0"
     devicename:
       name: Device Name
       description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."

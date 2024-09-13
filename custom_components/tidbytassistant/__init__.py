@@ -1,7 +1,7 @@
 import logging
 import requests
 from typing import Dict
-from .const import DOMAIN, CONF_DEVICE, CONF_TOKEN, CONF_ID, CONF_PORT, CONF_NAME, ATTR_CONTENT, ATTR_CONTENT_ID, ATTR_DEVICENANME, ATTR_CONT_TYPE, ATTR_CUSTOM_CONT, ATTR_TEXT_TYPE, ATTR_FONT
+from .const import DOMAIN, CONF_DEVICE, CONF_TOKEN, CONF_ID, CONF_PORT, CONF_NAME, ATTR_CONTENT, ATTR_CONTENT_ID, ATTR_DEVICENANME, ATTR_CONT_TYPE, ATTR_CUSTOM_CONT, ATTR_TEXT_TYPE, ATTR_FONT, ATTR_COLOR
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.exceptions import HomeAssistantError
@@ -107,6 +107,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         texttype = call.data.get(ATTR_TEXT_TYPE)
         devicename = call.data.get(ATTR_DEVICENANME)
         font = call.data.get(ATTR_FONT)
+        color = call.data.get(ATTR_COLOR)
 
         data = config[DOMAIN]
         devicefound = False
@@ -124,7 +125,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             valid_names = valid_names[:-2]
             raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
         else:  
-            todo = {"content": content, "texttype": texttype, "font": font, "token": token, "deviceid": deviceid}
+            todo = {"content": content, "texttype": texttype, "font": font, "color": color, "token": token, "deviceid": deviceid}
             try:
                 response = requests.post(url, json=todo)
             except:
