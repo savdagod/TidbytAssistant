@@ -55,7 +55,7 @@ tidbytassistant:
 5. Enter your device name. Run the action to add your app to your app rotation.
 
 ### Deleting app from roation
-### Use the action TidbytAssistant: Delete
+#### Use the action TidbytAssistant: Delete
 1. Enter the contend ID of the app you published and device name.
 2. Run the action. The app should now be removed from your rotation.
    
