@@ -34,17 +34,17 @@ tidbytassistant:
 2. Use the *Content* dropdown to select from the built in notifications. These are apps that I have built that have little animations for notifications.
 3. Type out your device name and run the action.
 
-### Pushing text
-#### Use the action TidbytAssistant: Text
-1. Select the radio buttom for *Text*
-2. In the *Custom Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
-4. Enter your device name and run the action. You should see your text on the screen.
-
 ### Pushing your own files
 #### Use the action TidbytAssistant: Push
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
 3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
+   
+### Pushing text
+#### Use the action TidbytAssistant: Text
+1. Select the radio buttom for *Text*
+2. In the *Custom Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
+4. Enter your device name and run the action. You should see your text on the screen.
 
 ### Adding app to your regular app rotation
 #### Use the action TidbytAssistant: Publish
@@ -53,6 +53,11 @@ tidbytassistant:
 3. In the *Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 4. Enter a unique name in the *Content ID* field.
 5. Enter your device name. Run the action to add your app to your app rotation.
+
+### Deleting app from roation
+### Use the action TidbytAssistant: Delete
+1. Enter the contend ID of the app you published and device name.
+2. Run the action. The app should now be removed from your rotation.
    
 ## Things to note
 ### Changing Ports
@@ -60,6 +65,19 @@ By default, this integration sends the request on port 9000. If for some reason 
 ```txt
 tidbytassistant:
   port: 5000
+  device:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+    - name: another device name
+      ...
+```
+
+### Changing Ports
+By default, this integration sends the request to locahost. If you want to host the add-on separately or using HA Core then you can change the host in the configuration:
+```txt
+tidbytassistant:
+  host: 192.168.1.200
   device:
     - name: your device name
       deviceid: device_id_from_previous_step
@@ -84,3 +102,6 @@ tidbytassistant:
     - name: another device name
       ...
 ```
+
+### Troubleshooting
+The action should do a few checks when you run it and give feedback on what went wrong (ie if you enter an incorrect device name, it will give you a list of valid names). However, sometimes everything checks out on the HA side but won't on the add-on side. If you navigate to the add-on page and click 'Logs' you can see what went wrong if the action you ran is not giving you the desired results.
