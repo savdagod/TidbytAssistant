@@ -37,8 +37,8 @@ tidbytassistant:
 ### Pushing text
 #### Use the action TidbytAssistant: Text
 1. Select the radio buttom for *Text*
-2. In the *Custom Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors.
-4. Enter your device name and run the action. You should see your text scrolling across the screen.
+2. In the *Custom Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
+4. Enter your device name and run the action. You should see your text on the screen.
 
 ### Pushing your own files
 #### Use the action TidbytAssistant: Push
