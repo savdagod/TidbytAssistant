@@ -71,6 +71,21 @@ publish:
       required: true
       selector:
         text:
+delete:
+  name: Delete
+  fields:
+    contentid:
+      name: Content ID
+      description: "The Content ID you set when publishing your app."
+      required: true
+      selector:
+        text:
+    devicename:
+      name: Device Name
+      description: "The Tidbyt device you want to delete the app from. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
+      required: true
+      selector:
+        text:
 text:
   name: Text
   fields:
