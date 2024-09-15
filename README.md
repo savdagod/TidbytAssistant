@@ -51,7 +51,7 @@ tidbytassistant:
 ### Pushing text
 #### Use the action TidbytAssistant: Text
 1. Select the radio buttom for *Text*
-2. In the *Custom Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
+2. In the *Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
 4. Enter your device name and run the action. You should see your text on the screen.
 
 ### Adding app to your regular app rotation
@@ -64,7 +64,7 @@ tidbytassistant:
 
 ### Deleting app from roation
 #### Use the action TidbytAssistant: Delete
-1. Enter the contend ID of the app you published and device name.
+1. Enter the content ID of the app you published and device name.
 2. Run the action. The app should now be removed from your rotation.
    
 ## Things to note
