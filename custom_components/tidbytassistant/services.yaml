@@ -25,7 +25,7 @@ push:
             - label: Trash Day
               value: trash
             - label: Trash & Recycling Day
-              value: TrashRecycle
+              value: trashrecycle
     customcontent:
       name: Custom Content
       description: "Type the name of the custom content you want to display. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here."
