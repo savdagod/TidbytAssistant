@@ -89,7 +89,7 @@ tidbytassistant:
       ...
 ```
 
-### Changing Ports
+### Changing Hosts
 By default, this integration sends the request to locahost. If you want to host the add-on separately or using HA Core then you can change the host in the configuration:
 ```txt
 tidbytassistant:
