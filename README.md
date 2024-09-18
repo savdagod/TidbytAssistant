@@ -9,16 +9,24 @@ Display notifications from HomeAssistant to Tidbyt using this integration. You m
 https://github.com/savdagod/ha-addons
 ```
 
-You can add this repository to HACS if you have it installed by adding this link to your custom repository:
+## Installation
+
+I also highly recommend installing the ***Studio Code Server*** and ***Samba*** add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier. ***Samba*** is part of the official addons and ***Studio Code Server*** is part of the HomeAssistant community add-ons.
+
+### HACS
+You can add this repository to HACS if you have it installed by adding this link to your custom repository (click the 3 dots at the too right):
 ```txt
 https://github.com/savdagod/TidbytAssistant
 ```
+Then just search for TidbytAssistant and install the integration. You will have to restart HomeAssistant.
+
 This is the way i recommend you install this integration so that you can stay up-to-date on releases.
 
-I also highly recommend installing the ***Studio Code Server*** and ***Samba*** add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier. ***Samba*** is part of the official addons and ***Studio Code Server*** is part of the HomeAssistant community add-ons. You can use the ***Samba*** add-on to copy thos integration to your custom_components folder if yoh choose to install it manually.
+### Manual
+Copy the entirety of custom_components/tidbytassistant to your /config/custom_components folder. You can do this using ***Samba***.
 
 
-### Configuration
+## Configuration
 1. To add your Tidbyt device, open the Tidbyt app. Navigate to the device you want to add, click the settings icon at the top right then navigate to the Developer tab.
 2. Tap on Get API key. Here you will see a Device ID and Key. This is what you will use to set up the integration.
 3. In HomeAssistant, navigate to your **configuration.yaml** and add the following to the bottom:
