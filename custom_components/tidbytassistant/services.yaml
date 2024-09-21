@@ -25,7 +25,7 @@ push:
             - label: Trash Day
               value: trash
             - label: Trash & Recycling Day
-              value: TrashRecycle
+              value: trashrecycle
     customcontent:
       name: Custom Content
       description: "Type the name of the custom content you want to display. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here."
@@ -89,15 +89,10 @@ delete:
 text:
   name: Text
   fields:
-    content:
-      name: Content
-      description: "Type the name of the text you want displayed."
-      required: true
-      selector:
-        text:
     texttype:
       name: Text Type
-      description: "How you want the text diaplyed."
+      description: "How you want the text displayed."
+      default: "regular"
       required: true
       selector:
         select:
@@ -106,6 +101,14 @@ text:
               value: regular
             - label: Scrolling
               value: scrolling
+            - label: Title & Text
+              value: title
+    content:
+      name: Content
+      description: "The text you want displayed."
+      required: true
+      selector:
+        text:
     font:
       name: Font
       description: "Font for the text."
@@ -117,16 +120,64 @@ text:
               - tb-8
               - Dina_r400-6
               - 5x8
-              - 6x13
               - 10x20
               - tom-thumb
               - CG-pixel-3x5-mono
               - CG-pixel-4x5-mono
+              - 6x10
+              - 6x10-rounded
+              - 6x13
     color:
       name: Color
       description: "Font color for the text."
       required: true
       default: "#fff"
+      selector:
+        select:
+          options:
+              - label: White
+                value: "#fff"
+              - label: Blue
+                value: "#00f"
+              - label: Red
+                value: "#f00"
+              - label: Green
+                value: "#090"
+              - label: Yellow
+                value: "#ff0"
+              - label: Cyan
+                value: "#0ff"
+              - label: Lime
+                value: "#0f0"
+    titlecontent:
+      name: Title Content
+      description: "The text you want for the title."
+      required: false
+      selector:
+        text:
+    titlefont:
+      name: Title Font
+      description: "Font for the title."
+      required: false
+      default: "6x13"
+      selector:
+        select:
+          options:
+              - tb-8
+              - Dina_r400-6
+              - 5x8
+              - 10x20
+              - tom-thumb
+              - CG-pixel-3x5-mono
+              - CG-pixel-4x5-mono
+              - 6x10
+              - 6x10-rounded
+              - 6x13
+    titlecolor:
+      name: Title Color
+      description: "Font color for the title."
+      required: false
+      default: "#00f"
       selector:
         select:
           options:
