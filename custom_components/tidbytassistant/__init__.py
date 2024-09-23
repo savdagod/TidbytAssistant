@@ -1,7 +1,27 @@
 import logging
 import requests
 from typing import Dict
-from .const import DOMAIN, CONF_DEVICE, CONF_TOKEN, CONF_ID, CONF_PORT, CONF_HOST, CONF_NAME, ATTR_CONTENT, ATTR_CONTENT_ID, ATTR_DEVICENANME, ATTR_CONT_TYPE, ATTR_CUSTOM_CONT, ATTR_TEXT_TYPE, ATTR_FONT, ATTR_COLOR
+from .const import (
+    DOMAIN, 
+    CONF_DEVICE, 
+    CONF_TOKEN, 
+    CONF_ID, 
+    CONF_PORT, 
+    CONF_HOST, 
+    CONF_NAME, 
+    ATTR_CONTENT, 
+    ATTR_CONTENT_ID,
+    ATTR_DEVICENANME, 
+    ATTR_CONT_TYPE, 
+    ATTR_CUSTOM_CONT, 
+    ATTR_TEXT_TYPE, 
+    ATTR_FONT, 
+    ATTR_COLOR, 
+    ATTR_TITLE_CONTENT, 
+    ATTR_TITLE_COLOR, 
+    ATTR_TITLE_FONT,
+    ATTR_ARGS
+)
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.exceptions import HomeAssistantError
@@ -13,6 +33,10 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_PORT = "9000"
 DEFAULT_HOST = "localhost"
+DEFAULT_TITLE = ""
+DEFAULT_TITLE_COLOR = ""
+DEFAULT_TITLE_FONT = ""
+DEFAULT_ARGS = ""
 
 TIDBYT_SCHEMA = vol.Schema(
     {
@@ -45,6 +69,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         
         webhook_url = f"{url}/tidbyt-push"
         contenttype = call.data.get(ATTR_CONT_TYPE)
+        arguments = call.data.get(ATTR_ARGS)
         match contenttype:
             case "builtin":
                 content = call.data.get(ATTR_CONTENT)
@@ -68,11 +93,17 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             valid_names = valid_names[:-2]
             raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
         else:  
-            todo = {"content": content, "token": token, "deviceid": deviceid, "contenttype": contenttype}
+            todo = {"content": content, "token": token, "deviceid": deviceid, "contenttype": contenttype, "starargs": arguments}
             try:
                 response = requests.post(webhook_url, json=todo)
             except:
                 raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+
+            status = f"{response.status_code}"
+            if status == "500":
+                error = f"{response.text}"
+                _LOGGER.error(f"{error}")
+                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
     
     def pixlet_publish(call: ServiceCall) -> None:
         """Handle the service action call."""
@@ -80,6 +111,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         webhook_url = f"{url}/tidbyt-publish"
         content = call.data.get(ATTR_CONTENT)
         contentid = call.data.get(ATTR_CONTENT_ID)
+        arguments = call.data.get(ATTR_ARGS)
         devicename = call.data.get(ATTR_DEVICENANME)
         data = config[DOMAIN]
         devicefound = False
@@ -97,11 +129,17 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             valid_names = valid_names[:-2]
             raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
         else:  
-            todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid}
+            todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid, "starargs": arguments}
             try:
                 response = requests.post(webhook_url, json=todo)
             except:
                 raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+
+            status = f"{response.status_code}"
+            if status == "500":
+                error = f"{response.text}"
+                _LOGGER.error(f"{error}")
+                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
     
     def pixlet_text(call: ServiceCall) -> None:
         """Handle the service action call."""
@@ -112,6 +150,9 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         devicename = call.data.get(ATTR_DEVICENANME)
         font = call.data.get(ATTR_FONT)
         color = call.data.get(ATTR_COLOR)
+        title = call.data.get(ATTR_TITLE_CONTENT,DEFAULT_TITLE)
+        titlecolor = call.data.get(ATTR_TITLE_COLOR,DEFAULT_TITLE_COLOR)
+        titlefont = call.data.get(ATTR_TITLE_FONT,DEFAULT_TITLE_FONT)
 
         data = config[DOMAIN]
         devicefound = False
@@ -128,12 +169,19 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 valid_names += vname + ", "
             valid_names = valid_names[:-2]
             raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
-        else:  
-            todo = {"content": content, "texttype": texttype, "font": font, "color": color, "token": token, "deviceid": deviceid}
+        else:
+            todo = {"content": content, "texttype": texttype, "font": font, "color": color, "title": title, "titlecolor": titlecolor, "titlefont": titlefont, "token": token, "deviceid": deviceid}
             try:
                 response = requests.post(webhook_url, json=todo)
             except:
                 raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+
+            status = f"{response.status_code}"
+            if status == "500":
+                error = f"{response.text}"
+                _LOGGER.error(f"{error}")
+                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+
     
     def pixlet_delete(call: ServiceCall) -> None:
         """Handle the service action call."""
@@ -162,6 +210,12 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 response = requests.post(webhook_url, json=todo)
             except:
                 raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+
+            status = f"{response.status_code}"
+            if status == "500":
+                error = f"{response.text}"
+                _LOGGER.error(f"{error}")
+                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
 
     hass.services.register(DOMAIN, "Push", pixlet_push)
     hass.services.register(DOMAIN, "Publish", pixlet_publish)

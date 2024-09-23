@@ -44,6 +44,12 @@ push:
               value: builtin
             - label: Custom
               value: custom
+    arguments:
+      name: Arguments
+      description: "Arguments you want to send to your .star app. This must be a key=value pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3"
+      required: false
+      selector:
+        text:
     devicename:
       name: Device Name
       description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
@@ -61,8 +67,14 @@ publish:
         text:
     contentid:
       name: Content ID
-      description: "A unique name for your app."
+      description: "A unique name for your app. Alpha numeric characters only (A-Z, a-z or 0-9)."
       required: true
+      selector:
+        text:
+    arguments:
+      name: Arguments
+      description: "Arguments you want to send to your .star app. This must be a key=value pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3"
+      required: false
       selector:
         text:
     devicename:
