@@ -8,24 +8,32 @@ push:
       selector:
         select:
           options:
-          - label: Washer
-            value: washer
-          - label: Dryer
-            value: dryer
-          - label: Dishwasher
-            value: dishwasher
-          - label: Coffee Maker
-            value: coffee
-          - label: Doorbell
-            value: doorbell
-          - label: HVAC Filters
-            value: filters
-          - label: Close Fridge
-            value: fridge
-          - label: Trash Day
-            value: trash
-          - label: Trash & Recycling Day
-            value: trashrecycle
+            - label: Washer
+              value: washer
+            - label: Dryer
+              value: dryer
+            - label: Dishwasher
+              value: dishwasher
+            - label: Coffee Maker
+              value: coffee
+            - label: Doorbell
+              value: doorbell
+            - label: HVAC Filters
+              value: filters
+            - label: Close Fridge
+              value: fridge
+            - label: Trash Day
+              value: trash
+            - label: Trash & Recycling Day
+              value: trashrecycle
+            - label: Garage Closed
+              value: garageclosed
+            - label: Garage Closing
+              value: garageclosing
+            - label: Garage Open
+              value: garageopen
+            - label: Garage Open
+              value: garageopening
     customcontent:
       name: Custom Content
       description: 'Type the name of the custom content you want to display. Example:
