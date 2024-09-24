@@ -20,7 +20,8 @@ from .const import (
     ATTR_TITLE_CONTENT, 
     ATTR_TITLE_COLOR, 
     ATTR_TITLE_FONT,
-    ATTR_ARGS
+    ATTR_ARGS,
+    ATTR_PUBLISH_TYPE
 )
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
@@ -112,6 +113,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         content = call.data.get(ATTR_CONTENT)
         contentid = call.data.get(ATTR_CONTENT_ID)
         arguments = call.data.get(ATTR_ARGS)
+        publishtype = call.data.get(ATTR_PUBLISH_TYPE)
         devicename = call.data.get(ATTR_DEVICENANME)
         data = config[DOMAIN]
         devicefound = False
@@ -129,7 +131,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             valid_names = valid_names[:-2]
             raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
         else:  
-            todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid, "starargs": arguments}
+            todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid, "publishtype": publishtype, "starargs": arguments}
             try:
                 response = requests.post(webhook_url, json=todo)
             except:

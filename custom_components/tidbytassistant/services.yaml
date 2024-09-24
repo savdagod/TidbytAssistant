@@ -71,6 +71,18 @@ publish:
       required: true
       selector:
         text:
+    publishtype:
+      name: Publish Type
+      description: "How you want content published. Background publishes without replacing the current app and Foreground will publish and also show you the app instantly."
+      required: true
+      default: "background"
+      selector:
+        select:
+          options:
+            - label: Background
+              value: background
+            - label: Foreground
+              value: foreground
     arguments:
       name: Arguments
       description: "Arguments you want to send to your .star app. This must be a key=value pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3"
