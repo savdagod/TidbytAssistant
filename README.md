@@ -131,6 +131,7 @@ def main(config):
 ```
 This example has a varible "who", which can be used as the **key=value** pair **who=me** which will pass the value **me** into your star app. Here is an example I use for the Movie Night app, which has two varibles **time** and **title** and uses HomeAssistant's template values:
 ```
+  ... other service data here
   arguments: >-
     time={{ (now().strftime('%Y-%m-%d') + 'T' +
     states('input_datetime.movie_night_time') + now().isoformat()[-6:]) 
