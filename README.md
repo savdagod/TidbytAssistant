@@ -55,6 +55,8 @@ tidbytassistant:
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
 3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
+4. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***.
+5. Enter your device name. Run the action to see it displayed on your Tidbyt.
    
 ### Pushing text
 #### Use the action TidbytAssistant: Text
@@ -68,7 +70,8 @@ tidbytassistant:
 2. Place your .star file(s) in this folder.
 3. In the *Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 4. Enter a unique name in the *Content ID* field.
-5. Enter your device name. Run the action to add your app to your app rotation.
+5. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***
+6. Enter your device name. Run the action to add your app to your app rotation.
 
 ### Deleting app from roation
 #### Use the action TidbytAssistant: Delete
