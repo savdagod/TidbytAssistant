@@ -55,6 +55,8 @@ tidbytassistant:
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
 3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
+4. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
+5. Enter your device name. Run the action to see it displayed on your Tidbyt.
    
 ### Pushing text
 #### Use the action TidbytAssistant: Text
@@ -68,7 +70,8 @@ tidbytassistant:
 2. Place your .star file(s) in this folder.
 3. In the *Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 4. Enter a unique name in the *Content ID* field.
-5. Enter your device name. Run the action to add your app to your app rotation.
+5. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
+6. Enter your device name. Run the action to add your app to your app rotation.
 
 ### Deleting app from roation
 #### Use the action TidbytAssistant: Delete
@@ -117,6 +120,22 @@ tidbytassistant:
       token: !secret tidbyt_key
     - name: another device name
       ...
+```
+
+### Passing arguments
+Passing arguments to your app can be helpful because it removes the need to hard code values. It also allows you to pass in templated values directly to your apps. The following example is taken from the Pixlet docs and is how you would use these varibles inside your app:
+```
+def main(config):
+    who = config.get("who")
+    print("Hello, %s" % who)
+```
+This example has a varible "who", which can be used as the **key=value** pair **who=me** which will pass the value **me** into your star app. Here is an example I use for the Movie Night app, which has two varibles **time** and **title** and uses HomeAssistant's template values:
+```
+  ... other service data here
+  arguments: >-
+    time={{ (now().strftime('%Y-%m-%d') + 'T' +
+    states('input_datetime.movie_night_time') + now().isoformat()[-6:]) 
+    }};title={{ states('input_text.movie_night_movie') }}
 ```
 
 ### Troubleshooting
