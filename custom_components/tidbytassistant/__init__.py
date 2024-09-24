@@ -1,5 +1,7 @@
 import logging
+import os
 import requests
+import yaml
 from typing import Dict
 from .const import (
     DOMAIN, 
@@ -65,12 +67,30 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     port = conf.get(CONF_PORT,DEFAULT_PORT)
     url = f"http://{host}:{port}/hooks"
     
+    config_dir = hass.config.path()
+    yaml_path = os.path.join(config_dir, "custom_components", "tidbytassistant", "services.yaml")
+    with open(yaml_path) as file:
+        config = yaml.safe_load(file)
+    
+    devicelist = []
+    for item in conf[CONF_DEVICE]:
+        devicelist.append(item[CONF_NAME])
+    device_name_options = [{"label": name, "value": name} for name in devicelist]
+
+    config['push']['fields']['devicename']['selector']['select']['options'] = device_name_options
+    config['publish']['fields']['devicename']['selector']['select']['options'] = device_name_options
+    config['delete']['fields']['devicename']['selector']['select']['options'] = device_name_options
+    config['text']['fields']['devicename']['selector']['select']['options'] = device_name_options
+    
+    with open(yaml_path, 'w') as file:
+        yaml.dump(config, file, default_flow_style=False, sort_keys=False)
+
     def pixlet_push(call: ServiceCall) -> None:
         """Handle the service action call."""
         
         webhook_url = f"{url}/tidbyt-push"
         contenttype = call.data.get(ATTR_CONT_TYPE)
-        arguments = call.data.get(ATTR_ARGS)
+        arguments = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
         match contenttype:
             case "builtin":
                 content = call.data.get(ATTR_CONTENT)
@@ -78,33 +98,22 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 content = call.data.get(ATTR_CUSTOM_CONT)
 
         devicename = call.data.get(ATTR_DEVICENANME)
-        data = config[DOMAIN]
-        devicefound = False
-        for item in data[CONF_DEVICE]:
-            if item[CONF_NAME] == devicename:
-                token = item[CONF_TOKEN]
-                deviceid = item[CONF_ID]
-                devicefound = True
-                break
-        if devicefound is False:
-            valid_names = ""
-            for item in data[CONF_DEVICE]:
-                vname = item[CONF_NAME]
-                valid_names += vname + ", "
-            valid_names = valid_names[:-2]
-            raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
-        else:  
-            todo = {"content": content, "token": token, "deviceid": deviceid, "contenttype": contenttype, "starargs": arguments}
-            try:
-                response = requests.post(webhook_url, json=todo)
-            except:
-                raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+        for device in devicename:
+            for item in conf[CONF_DEVICE]:
+                if item[CONF_NAME] == device:
+                    token = item[CONF_TOKEN]
+                    deviceid = item[CONF_ID]
+                    todo = {"content": content, "token": token, "deviceid": deviceid, "contenttype": contenttype, "starargs": arguments}
+                    try:
+                        response = requests.post(webhook_url, json=todo)
+                    except:
+                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
 
-            status = f"{response.status_code}"
-            if status == "500":
-                error = f"{response.text}"
-                _LOGGER.error(f"{error}")
-                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+                    status = f"{response.status_code}"
+                    if status == "500":
+                        error = f"{response.text}"
+                        _LOGGER.error(f"{error}")
+                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
     
     def pixlet_publish(call: ServiceCall) -> None:
         """Handle the service action call."""
@@ -112,36 +121,27 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         webhook_url = f"{url}/tidbyt-publish"
         content = call.data.get(ATTR_CONTENT)
         contentid = call.data.get(ATTR_CONTENT_ID)
-        arguments = call.data.get(ATTR_ARGS)
+        arguments = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
         publishtype = call.data.get(ATTR_PUBLISH_TYPE)
-        devicename = call.data.get(ATTR_DEVICENANME)
-        data = config[DOMAIN]
-        devicefound = False
-        for item in data[CONF_DEVICE]:
-            if item[CONF_NAME] == devicename:
-                token = item[CONF_TOKEN]
-                deviceid = item[CONF_ID]
-                devicefound = True
-                break
-        if devicefound is False:
-            valid_names = ""
-            for item in data[CONF_DEVICE]:
-                vname = item[CONF_NAME]
-                valid_names += vname + ", "
-            valid_names = valid_names[:-2]
-            raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
-        else:  
-            todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid, "publishtype": publishtype, "starargs": arguments}
-            try:
-                response = requests.post(webhook_url, json=todo)
-            except:
-                raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
 
-            status = f"{response.status_code}"
-            if status == "500":
-                error = f"{response.text}"
-                _LOGGER.error(f"{error}")
-                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+        devicename = call.data.get(ATTR_DEVICENANME)
+        for device in devicename:
+            for item in conf[CONF_DEVICE]:
+                if item[CONF_NAME] == device:
+                    token = item[CONF_TOKEN]
+                    deviceid = item[CONF_ID]
+                    todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid, "publishtype": publishtype, "starargs": arguments}
+                    try:
+                        response = requests.post(webhook_url, json=todo)
+                    except:
+                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+                        break
+
+                    status = f"{response.status_code}"
+                    if status == "500":
+                        error = f"{response.text}"
+                        _LOGGER.error(f"{error}")
+                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
     
     def pixlet_text(call: ServiceCall) -> None:
         """Handle the service action call."""
@@ -156,68 +156,48 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         titlecolor = call.data.get(ATTR_TITLE_COLOR,DEFAULT_TITLE_COLOR)
         titlefont = call.data.get(ATTR_TITLE_FONT,DEFAULT_TITLE_FONT)
 
-        data = config[DOMAIN]
-        devicefound = False
-        for item in data[CONF_DEVICE]:
-            if item[CONF_NAME] == devicename:
-                token = item[CONF_TOKEN]
-                deviceid = item[CONF_ID]
-                devicefound = True
-                break
-        if devicefound is False:
-            valid_names = ""
-            for item in data[CONF_DEVICE]:
-                vname = item[CONF_NAME]
-                valid_names += vname + ", "
-            valid_names = valid_names[:-2]
-            raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
-        else:
-            todo = {"content": content, "texttype": texttype, "font": font, "color": color, "title": title, "titlecolor": titlecolor, "titlefont": titlefont, "token": token, "deviceid": deviceid}
-            try:
-                response = requests.post(webhook_url, json=todo)
-            except:
-                raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+        devicename = call.data.get(ATTR_DEVICENANME)
+        for device in devicename:
+            for item in conf[CONF_DEVICE]:
+                if item[CONF_NAME] == device:
+                    token = item[CONF_TOKEN]
+                    deviceid = item[CONF_ID]
+                    todo = {"content": content, "texttype": texttype, "font": font, "color": color, "title": title, "titlecolor": titlecolor, "titlefont": titlefont, "token": token, "deviceid": deviceid}
+                    try:
+                        response = requests.post(webhook_url, json=todo)
+                    except:
+                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
 
-            status = f"{response.status_code}"
-            if status == "500":
-                error = f"{response.text}"
-                _LOGGER.error(f"{error}")
-                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+                    status = f"{response.status_code}"
+                    if status == "500":
+                        error = f"{response.text}"
+                        _LOGGER.error(f"{error}")
+                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
 
-    
     def pixlet_delete(call: ServiceCall) -> None:
         """Handle the service action call."""
 
         webhook_url = f"{url}/tidbyt-delete"
         contentid = call.data.get(ATTR_CONTENT_ID)
         devicename = call.data.get(ATTR_DEVICENANME)
-        data = config[DOMAIN]
-        devicefound = False
-        for item in data[CONF_DEVICE]:
-            if item[CONF_NAME] == devicename:
-                token = item[CONF_TOKEN]
-                deviceid = item[CONF_ID]
-                devicefound = True
-                break
-        if devicefound is False:
-            valid_names = ""
-            for item in data[CONF_DEVICE]:
-                vname = item[CONF_NAME]
-                valid_names += vname + ", "
-            valid_names = valid_names[:-2]
-            raise HomeAssistantError(f"Device name {devicename} was not found. Valid device names are: {valid_names}")
-        else:  
-            todo = {"contentid": contentid, "token": token, "deviceid": deviceid}
-            try:
-                response = requests.post(webhook_url, json=todo)
-            except:
-                raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
 
-            status = f"{response.status_code}"
-            if status == "500":
-                error = f"{response.text}"
-                _LOGGER.error(f"{error}")
-                raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+        devicename = call.data.get(ATTR_DEVICENANME)
+        for device in devicename:
+            for item in conf[CONF_DEVICE]:
+                if item[CONF_NAME] == device:
+                    token = item[CONF_TOKEN]
+                    deviceid = item[CONF_ID]
+                    todo = {"contentid": contentid, "token": token, "deviceid": deviceid}
+                    try:
+                        response = requests.post(webhook_url, json=todo)
+                    except:
+                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+
+                    status = f"{response.status_code}"
+                    if status == "500":
+                        error = f"{response.text}"
+                        _LOGGER.error(f"{error}")
+                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
 
     hass.services.register(DOMAIN, "Push", pixlet_push)
     hass.services.register(DOMAIN, "Publish", pixlet_publish)

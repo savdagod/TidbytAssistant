@@ -3,225 +3,242 @@ push:
   fields:
     content:
       name: Content
-      description: "The content you want displayed on the Tidbyt."
+      description: The content you want displayed on the Tidbyt.
       required: false
       selector:
         select:
           options:
-            - label: Washer
-              value: washer
-            - label: Dryer
-              value: dryer
-            - label: Dishwasher
-              value: dishwasher
-            - label: Coffee Maker
-              value: coffee
-            - label: Doorbell
-              value: doorbell
-            - label: HVAC Filters
-              value: filters
-            - label: Close Fridge
-              value: fridge
-            - label: Trash Day
-              value: trash
-            - label: Trash & Recycling Day
-              value: trashrecycle
+          - label: Washer
+            value: washer
+          - label: Dryer
+            value: dryer
+          - label: Dishwasher
+            value: dishwasher
+          - label: Coffee Maker
+            value: coffee
+          - label: Doorbell
+            value: doorbell
+          - label: HVAC Filters
+            value: filters
+          - label: Close Fridge
+            value: fridge
+          - label: Trash Day
+            value: trash
+          - label: Trash & Recycling Day
+            value: trashrecycle
     customcontent:
       name: Custom Content
-      description: "Type the name of the custom content you want to display. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here."
+      description: 'Type the name of the custom content you want to display. Example:
+        For custom you added ''example.star'' to /config/tidbyt then you would type
+        ''example'' here.'
       required: false
       selector:
-        text:
+        text: null
     contenttype:
       name: Content Type
-      description: "Select between the built-in content or custom content. Custom content should be a .star file placed inside /config/tidbyt."
+      description: Select between the built-in content or custom content. Custom content
+        should be a .star file placed inside /config/tidbyt.
       required: true
-      default: "builtin"
+      default: builtin
       selector:
         select:
           options:
-            - label: Built-In
-              value: builtin
-            - label: Custom
-              value: custom
+          - label: Built-In
+            value: builtin
+          - label: Custom
+            value: custom
     arguments:
       name: Arguments
-      description: "Arguments you want to send to your .star app. This must be a key=value pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3"
+      description: 'Arguments you want to send to your .star app. This must be a key=value
+        pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3'
       required: false
       selector:
-        text:
+        text: null
     devicename:
       name: Device Name
-      description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
+      description: The Tidbyt device you want content to be displayed to.
       required: true
       selector:
-        text:
+        select:
+          multiple: true
+          options:
 publish:
   name: Publish
   fields:
     content:
       name: Content
-      description: "Type the name of the custom content you want to add to your regular app rotation. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here."
+      description: 'Type the name of the custom content you want to add to your regular
+        app rotation. Example: For custom you added ''example.star'' to /config/tidbyt
+        then you would type ''example'' here.'
       required: true
       selector:
-        text:
+        text: null
     contentid:
       name: Content ID
-      description: "A unique name for your app. Alpha numeric characters only (A-Z, a-z or 0-9)."
+      description: A unique name for your app. Alpha numeric characters only (A-Z,
+        a-z or 0-9).
       required: true
       selector:
-        text:
+        text: null
     publishtype:
       name: Publish Type
-      description: "How you want content published. Background publishes without replacing the current app and Foreground will publish and also show you the app instantly."
+      description: How you want content published. Background publishes without replacing
+        the current app and Foreground will publish and also show you the app instantly.
       required: true
-      default: "background"
+      default: background
       selector:
         select:
           options:
-            - label: Background
-              value: background
-            - label: Foreground
-              value: foreground
+          - label: Background
+            value: background
+          - label: Foreground
+            value: foreground
     arguments:
       name: Arguments
-      description: "Arguments you want to send to your .star app. This must be a key=value pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3"
+      description: 'Arguments you want to send to your .star app. This must be a key=value
+        pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3'
       required: false
       selector:
-        text:
+        text: null
     devicename:
       name: Device Name
-      description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
+      description: The Tidbyt device you want content to be displayed to.
       required: true
       selector:
-        text:
+        select:
+          multiple: true
+          options:
 delete:
   name: Delete
   fields:
     contentid:
       name: Content ID
-      description: "The Content ID you set when publishing your app."
+      description: The Content ID you set when publishing your app.
       required: true
       selector:
-        text:
+        text: null
     devicename:
       name: Device Name
-      description: "The Tidbyt device you want to delete the app from. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
+      description: The Tidbyt device you want to delete the app from.
       required: true
       selector:
-        text:
+        select:
+          multiple: true
+          options:
 text:
   name: Text
   fields:
     texttype:
       name: Text Type
-      description: "How you want the text displayed."
-      default: "regular"
+      description: How you want the text displayed.
+      default: regular
       required: true
       selector:
         select:
           options:
-            - label: Regular
-              value: regular
-            - label: Scrolling
-              value: scrolling
-            - label: Title & Text
-              value: title
+          - label: Regular
+            value: regular
+          - label: Scrolling
+            value: scrolling
+          - label: Title & Text
+            value: title
     content:
       name: Content
-      description: "The text you want displayed."
+      description: The text you want displayed.
       required: true
       selector:
-        text:
+        text: null
     font:
       name: Font
-      description: "Font for the text."
+      description: Font for the text.
       required: true
-      default: "tb-8"
+      default: tb-8
       selector:
         select:
           options:
-              - tb-8
-              - Dina_r400-6
-              - 5x8
-              - 10x20
-              - tom-thumb
-              - CG-pixel-3x5-mono
-              - CG-pixel-4x5-mono
-              - 6x10
-              - 6x10-rounded
-              - 6x13
+          - tb-8
+          - Dina_r400-6
+          - 5x8
+          - 10x20
+          - tom-thumb
+          - CG-pixel-3x5-mono
+          - CG-pixel-4x5-mono
+          - 6x10
+          - 6x10-rounded
+          - 6x13
     color:
       name: Color
-      description: "Font color for the text."
+      description: Font color for the text.
       required: true
-      default: "#fff"
+      default: '#fff'
       selector:
         select:
           options:
-              - label: White
-                value: "#fff"
-              - label: Blue
-                value: "#00f"
-              - label: Red
-                value: "#f00"
-              - label: Green
-                value: "#090"
-              - label: Yellow
-                value: "#ff0"
-              - label: Cyan
-                value: "#0ff"
-              - label: Lime
-                value: "#0f0"
+          - label: White
+            value: '#fff'
+          - label: Blue
+            value: '#00f'
+          - label: Red
+            value: '#f00'
+          - label: Green
+            value: '#090'
+          - label: Yellow
+            value: '#ff0'
+          - label: Cyan
+            value: '#0ff'
+          - label: Lime
+            value: '#0f0'
     titlecontent:
       name: Title Content
-      description: "The text you want for the title."
+      description: The text you want for the title.
       required: false
       selector:
-        text:
+        text: null
     titlefont:
       name: Title Font
-      description: "Font for the title."
+      description: Font for the title.
       required: false
-      default: "6x13"
+      default: 6x13
       selector:
         select:
           options:
-              - tb-8
-              - Dina_r400-6
-              - 5x8
-              - 10x20
-              - tom-thumb
-              - CG-pixel-3x5-mono
-              - CG-pixel-4x5-mono
-              - 6x10
-              - 6x10-rounded
-              - 6x13
+          - tb-8
+          - Dina_r400-6
+          - 5x8
+          - 10x20
+          - tom-thumb
+          - CG-pixel-3x5-mono
+          - CG-pixel-4x5-mono
+          - 6x10
+          - 6x10-rounded
+          - 6x13
     titlecolor:
       name: Title Color
-      description: "Font color for the title."
+      description: Font color for the title.
       required: false
-      default: "#00f"
+      default: '#00f'
       selector:
         select:
           options:
-              - label: White
-                value: "#fff"
-              - label: Blue
-                value: "#00f"
-              - label: Red
-                value: "#f00"
-              - label: Green
-                value: "#090"
-              - label: Yellow
-                value: "#ff0"
-              - label: Cyan
-                value: "#0ff"
-              - label: Lime
-                value: "#0f0"
+          - label: White
+            value: '#fff'
+          - label: Blue
+            value: '#00f'
+          - label: Red
+            value: '#f00'
+          - label: Green
+            value: '#090'
+          - label: Yellow
+            value: '#ff0'
+          - label: Cyan
+            value: '#0ff'
+          - label: Lime
+            value: '#0f0'
     devicename:
       name: Device Name
-      description: "The Tidbyt device you want content to be displayed to. Make sure this matches the name you set in the configuration. Example: if you set the name to 'mytidbyt' then enter 'mytidbyt' here."
+      description: The Tidbyt device you want content to be displayed to.
       required: true
       selector:
-        text:
+        select:
+          multiple: true
+          options:
