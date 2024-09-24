@@ -32,7 +32,7 @@ push:
               value: garageclosing
             - label: Garage Open
               value: garageopen
-            - label: Garage Open
+            - label: Garage Opening
               value: garageopening
     customcontent:
       name: Custom Content
