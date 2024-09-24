@@ -48,7 +48,7 @@ tidbytassistant:
 #### Use the action TidbytAssistant: Push
 1. Select the radio button for *Built-in*.
 2. Use the *Content* dropdown to select from the built in notifications. These are apps that I have built that have little animations for notifications.
-3. Type out your device name and run the action.
+3. Select you device(s) and run the action.
 
 ### Pushing your own files
 #### Use the action TidbytAssistant: Push
@@ -56,13 +56,13 @@ tidbytassistant:
 2. Place your .star file(s) in this folder.
 3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 4. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
-5. Enter your device name. Run the action to see it displayed on your Tidbyt.
+5. Select your device(s) and run the action to see it displayed on your Tidbyt.
    
 ### Pushing text
 #### Use the action TidbytAssistant: Text
 1. Select the radio buttom for *Text*
 2. In the *Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
-4. Enter your device name and run the action. You should see your text on the screen.
+4. Select your device(s) and run the action. You should see your text on the screen.
 
 ### Adding app to your regular app rotation
 #### Use the action TidbytAssistant: Publish
@@ -71,12 +71,12 @@ tidbytassistant:
 3. In the *Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 4. Enter a unique name in the *Content ID* field.
 5. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
-6. Enter your device name. Run the action to add your app to your app rotation.
+6. Select you device(s) and run the action to add your app to your app rotation.
 
 ### Deleting app from roation
 #### Use the action TidbytAssistant: Delete
 1. Enter the content ID of the app you published and device name.
-2. Run the action. The app should now be removed from your rotation.
+2. Select you device(s) and run the action. The app should now be removed from your rotation.
    
 ## Things to note
 ### Changing Ports
