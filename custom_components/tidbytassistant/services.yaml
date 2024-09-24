@@ -26,6 +26,14 @@ push:
               value: trash
             - label: Trash & Recycling Day
               value: trashrecycle
+            - label: Garage Closed
+              value: garageclosed
+            - label: Garage Closing
+              value: garageclosing
+            - label: Garage Open
+              value: garageopen
+            - label: Garage Open
+              value: garageopening
     customcontent:
       name: Custom Content
       description: "Type the name of the custom content you want to display. Example: For custom you added 'example.star' to /config/tidbyt then you would type 'example' here."
