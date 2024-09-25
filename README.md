@@ -14,7 +14,7 @@ https://github.com/savdagod/ha-addons
 I also highly recommend installing the ***Studio Code Server*** and ***Samba*** add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier. ***Samba*** is part of the official addons and ***Studio Code Server*** is part of the HomeAssistant community add-ons.
 
 ### HACS
-You can add this repository to HACS if you have it installed by adding this link to your custom repository (click the 3 dots at the too right):
+You can add this repository to HACS if you have it installed by adding this link to your custom repository (click the 3 dots at the top right):
 ```txt
 https://github.com/savdagod/TidbytAssistant
 ```
