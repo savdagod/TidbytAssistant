@@ -2,6 +2,7 @@ import logging
 import os
 import requests
 import yaml
+import re
 from typing import Dict
 from .const import (
     DOMAIN, 
@@ -65,7 +66,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     conf = config[DOMAIN]
     host = conf.get(CONF_HOST,DEFAULT_HOST)
     port = conf.get(CONF_PORT,DEFAULT_PORT)
-    url = f"http://{host}:{port}/hooks"
+    url = f"http://{host}:{port}"
     
     config_dir = hass.config.path()
     yaml_path = os.path.join(config_dir, "custom_components", "tidbytassistant", "services.yaml")
@@ -84,13 +85,38 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     
     with open(yaml_path, 'w') as file:
         yaml.dump(config, file, default_flow_style=False, sort_keys=False)
+    
+    def validateid(input):
+        """Check if the string contains only A-Z, a-z, and 0-9."""
+        pattern = r'^[A-Za-z0-9]+$'
+        return bool(re.match(pattern, input))
+
+    def command(webhook_url, todo):
+        """Send command to url and handle responses"""
+        try:
+            response = requests.post(webhook_url, json=todo)
+        except:
+            raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+
+        status = f"{response.status_code}"
+        if status == "500" or status == "400":
+            error = f"{response.text}"
+            _LOGGER.error(f"{error}")
+            raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
 
     def pixlet_push(call: ServiceCall) -> None:
         """Handle the service action call."""
         
         webhook_url = f"{url}/tidbyt-push"
         contenttype = call.data.get(ATTR_CONT_TYPE)
-        arguments = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
+        args = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
+        arguments = {}
+        if args != "":
+            a = args.split(";")
+            for p in a:
+                key, value = p.split("=")
+                arguments[key] = value
+
         match contenttype:
             case "builtin":
                 content = call.data.get(ATTR_CONTENT)
@@ -104,25 +130,25 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
                     todo = {"content": content, "token": token, "deviceid": deviceid, "contenttype": contenttype, "starargs": arguments}
-                    try:
-                        response = requests.post(webhook_url, json=todo)
-                    except:
-                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+                    command(webhook_url, todo)
 
-                    status = f"{response.status_code}"
-                    if status == "500":
-                        error = f"{response.text}"
-                        _LOGGER.error(f"{error}")
-                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
-    
     def pixlet_publish(call: ServiceCall) -> None:
         """Handle the service action call."""
         
         webhook_url = f"{url}/tidbyt-publish"
         content = call.data.get(ATTR_CONTENT)
         contentid = call.data.get(ATTR_CONTENT_ID)
-        arguments = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
+        if not validateid(contentid):
+            raise HomeAssistantError(f"Content ID must contain characters A-Z, a-z or 0-9")
+
         publishtype = call.data.get(ATTR_PUBLISH_TYPE)
+        args = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
+        arguments = {}
+        if args != "":
+            a = args.split(";")
+            for p in a:
+                key, value = p.split("=")
+                arguments[key] = value
 
         devicename = call.data.get(ATTR_DEVICENANME)
         for device in devicename:
@@ -131,18 +157,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
                     todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid, "publishtype": publishtype, "starargs": arguments}
-                    try:
-                        response = requests.post(webhook_url, json=todo)
-                    except:
-                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
-                        break
-
-                    status = f"{response.status_code}"
-                    if status == "500":
-                        error = f"{response.text}"
-                        _LOGGER.error(f"{error}")
-                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
-    
+                    command(webhook_url, todo)
     def pixlet_text(call: ServiceCall) -> None:
         """Handle the service action call."""
         
@@ -163,16 +178,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
                     todo = {"content": content, "texttype": texttype, "font": font, "color": color, "title": title, "titlecolor": titlecolor, "titlefont": titlefont, "token": token, "deviceid": deviceid}
-                    try:
-                        response = requests.post(webhook_url, json=todo)
-                    except:
-                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
-
-                    status = f"{response.status_code}"
-                    if status == "500":
-                        error = f"{response.text}"
-                        _LOGGER.error(f"{error}")
-                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+                    command(webhook_url, todo)
 
     def pixlet_delete(call: ServiceCall) -> None:
         """Handle the service action call."""
@@ -188,16 +194,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
                     todo = {"contentid": contentid, "token": token, "deviceid": deviceid}
-                    try:
-                        response = requests.post(webhook_url, json=todo)
-                    except:
-                        raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
-
-                    status = f"{response.status_code}"
-                    if status == "500":
-                        error = f"{response.text}"
-                        _LOGGER.error(f"{error}")
-                        raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+                    command(webhook_url, todo)
 
     hass.services.register(DOMAIN, "Push", pixlet_push)
     hass.services.register(DOMAIN, "Publish", pixlet_publish)
