@@ -3,13 +3,14 @@
 </p>
 </br>
 
-Display notifications from HomeAssistant to Tidbyt using this integration. You must also install the TidbytAssistant add-on which can be found here:
+Display notifications from HomeAssistant to Tidbyt using this integration. 
+
+## Installation
+First, install the TidbytAssistant add-on which can be found here:
 
 ```txt
 https://github.com/savdagod/ha-addons
 ```
-
-## Installation
 
 I also highly recommend installing the ***Studio Code Server*** and ***Samba*** add-ons if you dont have them already. These will make copying files and editing your **configuration.yaml** much easier. ***Samba*** is part of the official addons and ***Studio Code Server*** is part of the HomeAssistant community add-ons.
 
