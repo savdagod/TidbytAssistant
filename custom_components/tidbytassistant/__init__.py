@@ -24,7 +24,9 @@ from .const import (
     ATTR_TITLE_COLOR, 
     ATTR_TITLE_FONT,
     ATTR_ARGS,
-    ATTR_PUBLISH_TYPE
+    ATTR_PUBLISH_TYPE,
+    ATTR_BRIGHTNESS,
+    ATTR_AUTODIM
 )
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
@@ -82,19 +84,22 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     config['publish']['fields']['devicename']['selector']['select']['options'] = device_name_options
     config['delete']['fields']['devicename']['selector']['select']['options'] = device_name_options
     config['text']['fields']['devicename']['selector']['select']['options'] = device_name_options
+    config['set_brightness']['fields']['devicename']['selector']['select']['options'] = device_name_options
     
     with open(yaml_path, 'w') as file:
         yaml.dump(config, file, default_flow_style=False, sort_keys=False)
     
     def validateid(input):
         """Check if the string contains only A-Z, a-z, and 0-9."""
+
         pattern = r'^[A-Za-z0-9]+$'
         return bool(re.match(pattern, input))
 
-    def command(webhook_url, todo):
+    def command(webhook_url, payload):
         """Send command to url and handle responses"""
+
         try:
-            response = requests.post(webhook_url, json=todo)
+            response = requests.post(webhook_url, json=payload)
         except:
             raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
 
@@ -102,7 +107,18 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         if status == "500" or status == "400":
             error = f"{response.text}"
             _LOGGER.error(f"{error}")
-            raise HomeAssistantError(f"An error occurred. Check the logs for more details.")
+            raise HomeAssistantError(f"{error}")
+
+    def getcurrentautodim(deviceid, token) -> bool:
+        url = f"https://api.tidbyt.com/v0/devices/{deviceid}"
+        header = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+        response = requests.get(url, headers=header)
+        data = response.json()
+        return data.get("autoDim")
 
     def pixlet_push(call: ServiceCall) -> None:
         """Handle the service action call."""
@@ -129,7 +145,13 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 if item[CONF_NAME] == device:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
-                    todo = {"content": content, "token": token, "deviceid": deviceid, "contenttype": contenttype, "starargs": arguments}
+                    todo = {
+                        "content": content,
+                        "token": token,
+                        "deviceid": deviceid,
+                        "contenttype": contenttype,
+                        "starargs": arguments
+                    }
                     command(webhook_url, todo)
 
     def pixlet_publish(call: ServiceCall) -> None:
@@ -156,8 +178,16 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 if item[CONF_NAME] == device:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
-                    todo = {"content": content, "contentid": contentid, "token": token, "deviceid": deviceid, "publishtype": publishtype, "starargs": arguments}
+                    todo = {
+                        "content": content, 
+                        "contentid": contentid, 
+                        "token": token,
+                        "deviceid": deviceid,
+                        "publishtype": publishtype,
+                        "starargs": arguments
+                    }
                     command(webhook_url, todo)
+
     def pixlet_text(call: ServiceCall) -> None:
         """Handle the service action call."""
         
@@ -177,7 +207,17 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 if item[CONF_NAME] == device:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
-                    todo = {"content": content, "texttype": texttype, "font": font, "color": color, "title": title, "titlecolor": titlecolor, "titlefont": titlefont, "token": token, "deviceid": deviceid}
+                    todo = {
+                        "content": content, 
+                        "texttype": texttype, 
+                        "font": font, 
+                        "color": color, 
+                        "title": title, 
+                        "titlecolor": titlecolor, 
+                        "titlefont": titlefont, 
+                        "token": token, 
+                        "deviceid": deviceid
+                    }
                     command(webhook_url, todo)
 
     def pixlet_delete(call: ServiceCall) -> None:
@@ -193,13 +233,47 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 if item[CONF_NAME] == device:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
-                    todo = {"contentid": contentid, "token": token, "deviceid": deviceid}
+                    todo = {
+                        "contentid": contentid,
+                        "token": token,
+                        "deviceid": deviceid
+                    }
                     command(webhook_url, todo)
 
-    hass.services.register(DOMAIN, "Push", pixlet_push)
-    hass.services.register(DOMAIN, "Publish", pixlet_publish)
-    hass.services.register(DOMAIN, "Text", pixlet_text)
-    hass.services.register(DOMAIN, "Delete", pixlet_delete)
+    def set_brightness(call: ServiceCall) -> None:
+        devicename = call.data.get(ATTR_DEVICENANME)
+        brightness = call.data.get(ATTR_BRIGHTNESS)
+        for device in devicename:
+            for item in conf[CONF_DEVICE]:
+                if item[CONF_NAME] == device:
+                    token = item[CONF_TOKEN]
+                    deviceid = item[CONF_ID]
+                    DEFAULT_AUTODIM = getcurrentautodim(deviceid, token)
+                    autodim = call.data.get(ATTR_AUTODIM,DEFAULT_AUTODIM)
+
+                    url = f"https://api.tidbyt.com/v0/devices/{deviceid}"
+                    header = {
+                        "Authorization": f"Bearer {token}",
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                    }
+                    payload = {
+                        "brightness": f"{brightness}",
+                        "autoDim": autodim,
+                    }
+                    response = requests.patch(url, json=payload, headers=header)
+
+                    status = f"{response.status_code}"
+                    if status == "500" or status == "400":
+                        error = f"{response.text}"
+                        _LOGGER.error(f"{error}")
+                        raise HomeAssistantError(f"{error}")
+
+    hass.services.register(DOMAIN, "push", pixlet_push)
+    hass.services.register(DOMAIN, "publish", pixlet_publish)
+    hass.services.register(DOMAIN, "text", pixlet_text)
+    hass.services.register(DOMAIN, "delete", pixlet_delete)
+    hass.services.register(DOMAIN, "set_brightness", set_brightness)
 
     # Return boolean to indicate that initialization was successful.
     return True
