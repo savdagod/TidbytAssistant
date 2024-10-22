@@ -55,6 +55,18 @@ push:
             value: builtin
           - label: Custom
             value: custom
+    language:
+      name: Language
+      description: Language to display built-in content.
+      required: false
+      default: en
+      selector:
+        select:
+          options:
+          - label: English
+            value: en
+          - label: German
+            value: de
     arguments:
       name: Arguments
       description: 'Arguments you want to send to your .star app. This must be a key=value
@@ -69,13 +81,7 @@ push:
       selector:
         select:
           multiple: true
-          options: &id001
-          - label: Living Room
-            value: Living Room
-          - label: Office
-            value: Office
-          - label: Loft
-            value: Loft
+          options:
 publish:
   name: Publish
   fields:
@@ -121,7 +127,7 @@ publish:
       selector:
         select:
           multiple: true
-          options: *id001
+          options: 
 delete:
   name: Delete
   fields:
@@ -138,7 +144,7 @@ delete:
       selector:
         select:
           multiple: true
-          options: *id001
+          options:
 text:
   name: Text
   fields:
@@ -255,4 +261,4 @@ text:
       selector:
         select:
           multiple: true
-          options: *id001
+          options:

@@ -26,7 +26,8 @@ from .const import (
     ATTR_ARGS,
     ATTR_PUBLISH_TYPE,
     ATTR_BRIGHTNESS,
-    ATTR_AUTODIM
+    ATTR_AUTODIM,
+    ATTR_LANG
 )
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
@@ -133,10 +134,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         return appids
 
     def command(webhook_url, payload):
-        try:
-            response = requests.post(webhook_url, json=payload)
-        except:
-            raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+        response = requests.post(webhook_url, json=payload)
 
         status = f"{response.status_code}"
         if status != "200":
@@ -147,6 +145,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     def pixlet_push(call: ServiceCall) -> None:
         webhook_url = f"{url}/tidbyt-push"
         contenttype = call.data.get(ATTR_CONT_TYPE)
+        language = call.data.get(ATTR_LANG)
         args = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
         arguments = {}
         if args != "":
@@ -154,6 +153,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             for p in a:
                 key, value = p.split("=")
                 arguments[key] = value
+        arguments["lang"] = language
 
         match contenttype:
             case "builtin":
@@ -172,7 +172,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         "token": token,
                         "deviceid": deviceid,
                         "contenttype": contenttype,
-                        "starargs": arguments
+                        "starargs": arguments,
                     }
                     command(webhook_url, todo)
 
