@@ -34,17 +34,22 @@ Copy the entirety of custom_components/tidbytassistant to your /config/custom_co
 ```txt
 tidbytassistant:
   device:
-    - name: your device name
+    - name: your device name #this is optional now, as the integration will get the device name using the Tidbyt API
       deviceid: device_id_from_previous_step
       token: key_from_previous_step
-    - name: another device name
+    - deviceid: device_id_from_previous_step
+      token: key_from_previous_step
       ...
 ```
-4. You can add as many devices as you want. Be sure to give each a unique name, you will be using this name when calling the action.
+4. You can add as many devices as you want.
 5. Restart HomeAssistant.
 6. Once HomeAssistant restarts, you should now have an action called TidbytAssistant: Push. Use this in your automations to send notifiations.
 
 ## Features
+
+### NEW! Light and switch entities
+The integration will expose each devices' sceen as a light entity. The autodim feature is exposed as a switch entity. The states are fetched every 30s.
+
 ### Pushing built-in notifications
 #### Use the action TidbytAssistant: Push
 1. Select the radio button for *Built-in*.
