@@ -8,32 +8,32 @@ push:
       selector:
         select:
           options:
-            - label: Washer
-              value: washer
-            - label: Dryer
-              value: dryer
-            - label: Dishwasher
-              value: dishwasher
-            - label: Coffee Maker
-              value: coffee
-            - label: Doorbell
-              value: doorbell
-            - label: HVAC Filters
-              value: filters
-            - label: Close Fridge
-              value: fridge
-            - label: Trash Day
-              value: trash
-            - label: Trash & Recycling Day
-              value: trashrecycle
-            - label: Garage Closed
-              value: garageclosed
-            - label: Garage Closing
-              value: garageclosing
-            - label: Garage Open
-              value: garageopen
-            - label: Garage Opening
-              value: garageopening
+          - label: Washer
+            value: washer
+          - label: Dryer
+            value: dryer
+          - label: Dishwasher
+            value: dishwasher
+          - label: Coffee Maker
+            value: coffee
+          - label: Doorbell
+            value: doorbell
+          - label: HVAC Filters
+            value: filters
+          - label: Close Fridge
+            value: fridge
+          - label: Trash Day
+            value: trash
+          - label: Trash & Recycling Day
+            value: trashrecycle
+          - label: Garage Closed
+            value: garageclosed
+          - label: Garage Closing
+            value: garageclosing
+          - label: Garage Open
+            value: garageopen
+          - label: Garage Opening
+            value: garageopening
     customcontent:
       name: Custom Content
       description: 'Type the name of the custom content you want to display. Example:
@@ -69,7 +69,13 @@ push:
       selector:
         select:
           multiple: true
-          options:
+          options: &id001
+          - label: Living Room
+            value: Living Room
+          - label: Office
+            value: Office
+          - label: Loft
+            value: Loft
 publish:
   name: Publish
   fields:
@@ -115,7 +121,7 @@ publish:
       selector:
         select:
           multiple: true
-          options:
+          options: *id001
 delete:
   name: Delete
   fields:
@@ -132,7 +138,7 @@ delete:
       selector:
         select:
           multiple: true
-          options:
+          options: *id001
 text:
   name: Text
   fields:
@@ -249,32 +255,4 @@ text:
       selector:
         select:
           multiple: true
-          options:
-set_brightness:
-  name: Set Brightness
-  fields:
-    brightness:
-      name: Brightness
-      description: Set brightness of Tidbyt device. This setting is overrided by the
-        auto dim setting.
-      required: true
-      selector:
-        number:
-          min: 1
-          max: 100
-    autodim:
-      name: Auto Dim
-      description: Set auto dim on/off. Setting it to on will override the brightness
-        value set above. Not setting this value will default to it's current state
-        (if current state is on, the brightness wont change until you turn it off).
-      required: false
-      selector:
-        boolean: null
-    devicename:
-      name: Device Name
-      description: The Tidbyt device you want content to be displayed to.
-      required: true
-      selector:
-        select:
-          multiple: true
-          options:
+          options: *id001

@@ -34,6 +34,7 @@ from homeassistant.exceptions import HomeAssistantError
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.discovery import load_platform
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ DEFAULT_ARGS = ""
 
 TIDBYT_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_NAME): cv.string, 
+        vol.Optional(CONF_NAME): cv.string, 
         vol.Required(CONF_ID): cv.string,
         vol.Required(CONF_TOKEN): cv.string,
     }
@@ -64,6 +65,17 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
+def getdevicename(deviceid, token) -> str:
+    url = f"https://api.tidbyt.com/v0/devices/{deviceid}"
+    header = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+    response = requests.get(url, headers=header)
+    data = response.json()
+    return data.get("displayName")
+
 def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     conf = config[DOMAIN]
     host = conf.get(CONF_HOST,DEFAULT_HOST)
@@ -77,52 +89,62 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     
     devicelist = []
     for item in conf[CONF_DEVICE]:
-        devicelist.append(item[CONF_NAME])
+        if CONF_NAME in item:
+            devicelist.append(item[CONF_NAME])
+        else:
+            retrievedname = getdevicename(item[CONF_ID],item[CONF_TOKEN])
+            devicelist.append(retrievedname)
+            item[CONF_NAME] = retrievedname
+
     device_name_options = [{"label": name, "value": name} for name in devicelist]
 
     config['push']['fields']['devicename']['selector']['select']['options'] = device_name_options
     config['publish']['fields']['devicename']['selector']['select']['options'] = device_name_options
     config['delete']['fields']['devicename']['selector']['select']['options'] = device_name_options
     config['text']['fields']['devicename']['selector']['select']['options'] = device_name_options
-    config['set_brightness']['fields']['devicename']['selector']['select']['options'] = device_name_options
-    
+
     with open(yaml_path, 'w') as file:
         yaml.dump(config, file, default_flow_style=False, sort_keys=False)
-    
+
     def validateid(input):
         """Check if the string contains only A-Z, a-z, and 0-9."""
-
         pattern = r'^[A-Za-z0-9]+$'
         return bool(re.match(pattern, input))
 
-    def command(webhook_url, payload):
-        """Send command to url and handle responses"""
-
-        try:
-            response = requests.post(webhook_url, json=payload)
-        except:
-            raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
-
-        status = f"{response.status_code}"
-        if status == "500" or status == "400":
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
-            raise HomeAssistantError(f"{error}")
-
-    def getcurrentautodim(deviceid, token) -> bool:
-        url = f"https://api.tidbyt.com/v0/devices/{deviceid}"
+    def getinstalledapps(deviceid, token):
+        url = f"https://api.tidbyt.com/v0/devices/{deviceid}/installations"
         header = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
         response = requests.get(url, headers=header)
+        status = f"{response.status_code}"
+        if status != "200":
+            error = f"{response.text}"
+            _LOGGER.error(f"{error}")
+            raise HomeAssistantError(f"{error}")
+            
+        appids = []
         data = response.json()
-        return data.get("autoDim")
+        for item in data['installations']:
+            if item["appID"] == "":
+                appids.append(item["id"])
+        return appids
+
+    def command(webhook_url, payload):
+        try:
+            response = requests.post(webhook_url, json=payload)
+        except:
+            raise HomeAssistantError(f"Could not communicate with the add-on. Is it installed?")
+
+        status = f"{response.status_code}"
+        if status != "200":
+            error = f"{response.text}"
+            _LOGGER.error(f"{error}")
+            raise HomeAssistantError(f"{error}")
 
     def pixlet_push(call: ServiceCall) -> None:
-        """Handle the service action call."""
-        
         webhook_url = f"{url}/tidbyt-push"
         contenttype = call.data.get(ATTR_CONT_TYPE)
         args = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
@@ -155,8 +177,6 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     command(webhook_url, todo)
 
     def pixlet_publish(call: ServiceCall) -> None:
-        """Handle the service action call."""
-        
         webhook_url = f"{url}/tidbyt-publish"
         content = call.data.get(ATTR_CONTENT)
         contentid = call.data.get(ATTR_CONTENT_ID)
@@ -189,8 +209,6 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     command(webhook_url, todo)
 
     def pixlet_text(call: ServiceCall) -> None:
-        """Handle the service action call."""
-        
         webhook_url = f"{url}/tidbyt-text"
         content = call.data.get(ATTR_CONTENT)
         texttype = call.data.get(ATTR_TEXT_TYPE)
@@ -221,50 +239,33 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     command(webhook_url, todo)
 
     def pixlet_delete(call: ServiceCall) -> None:
-        """Handle the service action call."""
-
-        webhook_url = f"{url}/tidbyt-delete"
         contentid = call.data.get(ATTR_CONTENT_ID)
-        devicename = call.data.get(ATTR_DEVICENANME)
-
+        if not validateid(contentid):
+            _LOGGER.error("Content ID must contain characters A-Z, a-z or 0-9")
+            raise HomeAssistantError("Content ID must contain characters A-Z, a-z or 0-9")
+        
         devicename = call.data.get(ATTR_DEVICENANME)
         for device in devicename:
             for item in conf[CONF_DEVICE]:
                 if item[CONF_NAME] == device:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
-                    todo = {
-                        "contentid": contentid,
-                        "token": token,
-                        "deviceid": deviceid
-                    }
-                    command(webhook_url, todo)
-
-    def set_brightness(call: ServiceCall) -> None:
-        devicename = call.data.get(ATTR_DEVICENANME)
-        brightness = call.data.get(ATTR_BRIGHTNESS)
-        for device in devicename:
-            for item in conf[CONF_DEVICE]:
-                if item[CONF_NAME] == device:
-                    token = item[CONF_TOKEN]
-                    deviceid = item[CONF_ID]
-                    DEFAULT_AUTODIM = getcurrentautodim(deviceid, token)
-                    autodim = call.data.get(ATTR_AUTODIM,DEFAULT_AUTODIM)
-
-                    url = f"https://api.tidbyt.com/v0/devices/{deviceid}"
+                    
+                    validids = getinstalledapps(deviceid, token)
+                    if contentid not in validids:
+                        _LOGGER.error(f"The Content ID you entered is not an installed app on {device}. Currently installed apps are: {validids}")
+                        raise HomeAssistantError(f"The Contend ID you entered is not an installed app on {device}. Currently installed apps are: {validids}")
+                    
+                    url = f"https://api.tidbyt.com/v0/devices/{deviceid}/installations/{contentid}"
                     header = {
                         "Authorization": f"Bearer {token}",
                         "Content-Type": "application/json",
                         "Accept": "application/json",
                     }
-                    payload = {
-                        "brightness": f"{brightness}",
-                        "autoDim": autodim,
-                    }
-                    response = requests.patch(url, json=payload, headers=header)
+                    response = requests.delete(url, headers=header)
 
                     status = f"{response.status_code}"
-                    if status == "500" or status == "400":
+                    if status != "200":
                         error = f"{response.text}"
                         _LOGGER.error(f"{error}")
                         raise HomeAssistantError(f"{error}")
@@ -273,7 +274,13 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     hass.services.register(DOMAIN, "publish", pixlet_publish)
     hass.services.register(DOMAIN, "text", pixlet_text)
     hass.services.register(DOMAIN, "delete", pixlet_delete)
-    hass.services.register(DOMAIN, "set_brightness", set_brightness)
+
+    hass.data[DOMAIN] = conf
+    load_platform(hass, 'light', DOMAIN, {}, config)
+    load_platform(hass, 'switch', DOMAIN, {}, config)
 
     # Return boolean to indicate that initialization was successful.
     return True
+
+    
+
