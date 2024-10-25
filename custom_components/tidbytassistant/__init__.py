@@ -181,6 +181,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         content = call.data.get(ATTR_CONTENT)
         contentid = call.data.get(ATTR_CONTENT_ID)
         contenttype = call.data.get(ATTR_CONT_TYPE)
+        language = call.data.get(ATTR_LANG)
         if not validateid(contentid):
             raise HomeAssistantError(f"Content ID must contain characters A-Z, a-z or 0-9")
 
@@ -192,6 +193,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             for p in a:
                 key, value = p.split("=")
                 arguments[key] = value
+            arguments["lang"] = language
 
         match contenttype:
             case "builtin":
