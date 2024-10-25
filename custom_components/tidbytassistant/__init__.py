@@ -180,6 +180,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         webhook_url = f"{url}/tidbyt-publish"
         content = call.data.get(ATTR_CONTENT)
         contentid = call.data.get(ATTR_CONTENT_ID)
+        contenttype = call.data.get(ATTR_CONT_TYPE)
         if not validateid(contentid):
             raise HomeAssistantError(f"Content ID must contain characters A-Z, a-z or 0-9")
 
@@ -191,6 +192,12 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             for p in a:
                 key, value = p.split("=")
                 arguments[key] = value
+
+        match contenttype:
+            case "builtin":
+                content = call.data.get(ATTR_CONTENT)
+            case "custom":
+                content = call.data.get(ATTR_CUSTOM_CONT)
 
         devicename = call.data.get(ATTR_DEVICENANME)
         for device in devicename:
@@ -204,7 +211,8 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         "token": token,
                         "deviceid": deviceid,
                         "publishtype": publishtype,
-                        "starargs": arguments
+                        "starargs": arguments,
+                        "contenttype": contenttype
                     }
                     command(webhook_url, todo)
 
