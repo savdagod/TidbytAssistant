@@ -133,18 +133,18 @@ publish:
             value: builtin
           - label: Custom
             value: custom
-      language:
-        name: Language
-        description: Language to display built-in content.
-        required: false
-        default: en
-        selector:
-          select:
-            options:
-            - label: English
-              value: en
-            - label: German
-              value: de
+    language:
+      name: Language
+      description: Language to display built-in content.
+      required: false
+      default: en
+      selector:
+        select:
+          options:
+          - label: English
+            value: en
+          - label: German
+            value: de
     contentid:
       name: Content ID
       description: A unique name for your app. Alpha numeric characters only (A-Z,
