@@ -153,11 +153,11 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             for p in a:
                 key, value = p.split("=")
                 arguments[key] = value
-        arguments["lang"] = language
 
         match contenttype:
             case "builtin":
                 content = call.data.get(ATTR_CONTENT)
+                arguments["lang"] = language
             case "custom":
                 content = call.data.get(ATTR_CUSTOM_CONT)
 
@@ -193,11 +193,11 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             for p in a:
                 key, value = p.split("=")
                 arguments[key] = value
-            arguments["lang"] = language
 
         match contenttype:
             case "builtin":
                 content = call.data.get(ATTR_CONTENT)
+                arguments["lang"] = language
             case "custom":
                 content = call.data.get(ATTR_CUSTOM_CONT)
 
