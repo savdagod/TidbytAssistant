@@ -8,32 +8,6 @@ push:
       selector:
         select:
           options:
-          - label: Washer
-            value: washer
-          - label: Dryer
-            value: dryer
-          - label: Dishwasher
-            value: dishwasher
-          - label: Coffee Maker
-            value: coffee
-          - label: Doorbell
-            value: doorbell
-          - label: HVAC Filters
-            value: filters
-          - label: Close Fridge
-            value: fridge
-          - label: Trash Day
-            value: trash
-          - label: Trash & Recycling Day
-            value: trashrecycle
-          - label: Garage Closed
-            value: garageclosed
-          - label: Garage Closing
-            value: garageclosing
-          - label: Garage Open
-            value: garageopen
-          - label: Garage Opening
-            value: garageopening
     customcontent:
       name: Custom Content
       description: 'Type the name of the custom content you want to display. Example:
@@ -55,101 +29,11 @@ push:
             value: builtin
           - label: Custom
             value: custom
-    language:
-      name: Language
-      description: Language to display built-in content.
-      required: false
-      default: en
-      selector:
-        select:
-          options:
-          - label: English
-            value: en
-          - label: German
-            value: de
-    arguments:
-      name: Arguments
-      description: 'Arguments you want to send to your .star app. This must be a key=value
-        pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3'
-      required: false
-      selector:
-        text: null
-    devicename:
-      name: Device Name
-      description: The Tidbyt device you want content to be displayed to.
-      required: true
-      selector:
-        select:
-          multiple: true
-          options:
-publish:
-  name: Publish
-  fields:
-    content:
-      name: Content
-      description: The content you want displayed on the Tidbyt.
-      required: false
-      selector:
-        select:
-          options:
-          - label: Washer
-            value: washer
-          - label: Dryer
-            value: dryer
-          - label: HVAC Filters
-            value: filters
-          - label: Close Fridge
-            value: fridge
-          - label: Trash Day
-            value: trash
-          - label: Trash & Recycling Day
-            value: trashrecycle
-          - label: Trash Bins Out
-            value: trashbinsout
-          - label: Trash & Recycle Bins Out
-            value: trashrecbinsout
-          - label: Garage Closed
-            value: garageclosed
-          - label: Garage Open
-            value: garageopen
-    customcontent:
-      name: Custom Content
-      description: 'Type the name of the custom content you want to add to your regular
-        app rotation. Example: For custom you added ''example.star'' to /config/tidbyt
-        then you would type ''example'' here.'
-      required: false
-      selector:
-        text: null
-    contenttype:
-      name: Content Type
-      description: Select between the built-in content or custom content. Custom content
-        should be a .star file placed inside /config/tidbyt.
-      required: true
-      default: builtin
-      selector:
-        select:
-          options:
-          - label: Built-In
-            value: builtin
-          - label: Custom
-            value: custom
-    language:
-      name: Language
-      description: Language to display built-in content.
-      required: false
-      default: en
-      selector:
-        select:
-          options:
-          - label: English
-            value: en
-          - label: German
-            value: de
     contentid:
       name: Content ID
       description: A unique name for your app. Alpha numeric characters only (A-Z,
         a-z or 0-9).
-      required: true
+      required: false
       selector:
         text: null
     publishtype:
@@ -157,14 +41,26 @@ publish:
       description: How you want content published. Background publishes without replacing
         the current app and Foreground will publish and also show you the app instantly.
       required: true
-      default: background
+      default: foreground
       selector:
         select:
           options:
-          - label: Background
-            value: background
           - label: Foreground
             value: foreground
+          - label: Background
+            value: background
+    language:
+      name: Language
+      description: Language to display built-in content.
+      required: false
+      default: en
+      selector:
+        select:
+          options:
+          - label: English
+            value: en
+          - label: German
+            value: de
     arguments:
       name: Arguments
       description: 'Arguments you want to send to your .star app. This must be a key=value
@@ -185,7 +81,7 @@ delete:
   fields:
     contentid:
       name: Content ID
-      description: The Content ID you set when publishing your app.
+      description: The Content ID you set when publishing your app. Specifying this adds the app to the rotation.
       required: true
       selector:
         text: null
@@ -306,6 +202,25 @@ text:
             value: '#0ff'
           - label: Lime
             value: '#0f0'
+    contentid:
+      name: Content ID
+      description: The Content ID you set when publishing your app. Specifying this adds the app to the rotation.
+      required: fasle
+      selector:
+        text: null
+    publishtype:
+      name: Publish Type
+      description: How you want content published. Background publishes without replacing
+        the current app and Foreground will publish and also show you the app instantly.
+      required: true
+      default: foreground
+      selector:
+        select:
+          options:
+          - label: Foreground
+            value: foreground
+          - label: Background
+            value: background
     devicename:
       name: Device Name
       description: The Tidbyt device you want content to be displayed to.

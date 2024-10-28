@@ -45,6 +45,8 @@ DEFAULT_TITLE = ""
 DEFAULT_TITLE_COLOR = ""
 DEFAULT_TITLE_FONT = ""
 DEFAULT_ARGS = ""
+DEFAULT_CONTENT_ID = ""
+DEFAULT_LANG = "en"
 
 TIDBYT_SCHEMA = vol.Schema(
     {
@@ -82,6 +84,12 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     host = conf.get(CONF_HOST,DEFAULT_HOST)
     port = conf.get(CONF_PORT,DEFAULT_PORT)
     url = f"http://{host}:{port}"
+
+    try:
+        response = requests.get(f"{url}/apps")
+    except:
+        _LOGGER.error("Could not connect to the add-on. Make sure it is installed or running and try again.")
+        return False
     
     config_dir = hass.config.path()
     yaml_path = os.path.join(config_dir, "custom_components", "tidbytassistant", "services.yaml")
@@ -100,9 +108,19 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     device_name_options = [{"label": name, "value": name} for name in devicelist]
 
     config['push']['fields']['devicename']['selector']['select']['options'] = device_name_options
-    config['publish']['fields']['devicename']['selector']['select']['options'] = device_name_options
     config['delete']['fields']['devicename']['selector']['select']['options'] = device_name_options
     config['text']['fields']['devicename']['selector']['select']['options'] = device_name_options
+
+    response = requests.get(f"{url}/apps")
+    status = f"{response.status_code}"
+    if status != "200":
+        error = f"{response.text}"
+        _LOGGER.error(f"{error}")
+    
+    data = response.json()
+    content_options = [{"label": item["label"], "value": item["value"]} for item in data]
+
+    config['push']['fields']['content']['selector']['select']['options'] = content_options
 
     with open(yaml_path, 'w') as file:
         yaml.dump(config, file, default_flow_style=False, sort_keys=False)
@@ -143,48 +161,9 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
             raise HomeAssistantError(f"{error}")
 
     def pixlet_push(call: ServiceCall) -> None:
-        webhook_url = f"{url}/tidbyt-push"
+        webhook_url = f"{url}/push"
+        contentid = call.data.get(ATTR_CONTENT_ID,DEFAULT_CONTENT_ID)
         contenttype = call.data.get(ATTR_CONT_TYPE)
-        language = call.data.get(ATTR_LANG)
-        args = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
-        arguments = {}
-        if args != "":
-            a = args.split(";")
-            for p in a:
-                key, value = p.split("=")
-                arguments[key] = value
-
-        match contenttype:
-            case "builtin":
-                content = call.data.get(ATTR_CONTENT)
-                arguments["lang"] = language
-            case "custom":
-                content = call.data.get(ATTR_CUSTOM_CONT)
-
-        devicename = call.data.get(ATTR_DEVICENANME)
-        for device in devicename:
-            for item in conf[CONF_DEVICE]:
-                if item[CONF_NAME] == device:
-                    token = item[CONF_TOKEN]
-                    deviceid = item[CONF_ID]
-                    todo = {
-                        "content": content,
-                        "token": token,
-                        "deviceid": deviceid,
-                        "contenttype": contenttype,
-                        "starargs": arguments,
-                    }
-                    command(webhook_url, todo)
-
-    def pixlet_publish(call: ServiceCall) -> None:
-        webhook_url = f"{url}/tidbyt-publish"
-        content = call.data.get(ATTR_CONTENT)
-        contentid = call.data.get(ATTR_CONTENT_ID)
-        contenttype = call.data.get(ATTR_CONT_TYPE)
-        language = call.data.get(ATTR_LANG)
-        if not validateid(contentid):
-            raise HomeAssistantError(f"Content ID must contain characters A-Z, a-z or 0-9")
-
         publishtype = call.data.get(ATTR_PUBLISH_TYPE)
         args = call.data.get(ATTR_ARGS,DEFAULT_ARGS)
         arguments = {}
@@ -197,7 +176,7 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         match contenttype:
             case "builtin":
                 content = call.data.get(ATTR_CONTENT)
-                arguments["lang"] = language
+                arguments["lang"] = call.data.get(ATTR_LANG,DEFAULT_LANG)
             case "custom":
                 content = call.data.get(ATTR_CUSTOM_CONT)
 
@@ -208,26 +187,32 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
                     todo = {
-                        "content": content, 
-                        "contentid": contentid, 
+                        "content": content,
+                        "contentid": contentid,
+                        "contenttype": contenttype,
+                        "publishtype": publishtype,
                         "token": token,
                         "deviceid": deviceid,
-                        "publishtype": publishtype,
                         "starargs": arguments,
-                        "contenttype": contenttype
                     }
                     command(webhook_url, todo)
 
     def pixlet_text(call: ServiceCall) -> None:
-        webhook_url = f"{url}/tidbyt-text"
-        content = call.data.get(ATTR_CONTENT)
+        webhook_url = f"{url}/push"
+        contenttype = "builtin"
+        contentid = call.data.get(ATTR_CONTENT_ID,DEFAULT_CONTENT_ID)
+        publishtype = call.data.get(ATTR_PUBLISH_TYPE)
         texttype = call.data.get(ATTR_TEXT_TYPE)
+        content = f"text-{texttype}"
         devicename = call.data.get(ATTR_DEVICENANME)
-        font = call.data.get(ATTR_FONT)
-        color = call.data.get(ATTR_COLOR)
-        title = call.data.get(ATTR_TITLE_CONTENT,DEFAULT_TITLE)
-        titlecolor = call.data.get(ATTR_TITLE_COLOR,DEFAULT_TITLE_COLOR)
-        titlefont = call.data.get(ATTR_TITLE_FONT,DEFAULT_TITLE_FONT)
+
+        arguments = {}
+        arguments["content"] = call.data.get(ATTR_CONTENT)
+        arguments["font"] = call.data.get(ATTR_FONT)
+        arguments["color"] = call.data.get(ATTR_COLOR)
+        arguments["title"] = call.data.get(ATTR_TITLE_CONTENT,DEFAULT_TITLE)
+        arguments["titlecolor"] = call.data.get(ATTR_TITLE_COLOR,DEFAULT_TITLE_COLOR)
+        arguments["titlefont"] = call.data.get(ATTR_TITLE_FONT,DEFAULT_TITLE_FONT)
 
         devicename = call.data.get(ATTR_DEVICENANME)
         for device in devicename:
@@ -236,15 +221,14 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
                     todo = {
-                        "content": content, 
+                        "content": content,
+                        "contentid": contentid,
+                        "contenttype": contenttype,
+                        "publishtype": publishtype,
                         "texttype": texttype, 
-                        "font": font, 
-                        "color": color, 
-                        "title": title, 
-                        "titlecolor": titlecolor, 
-                        "titlefont": titlefont, 
                         "token": token, 
-                        "deviceid": deviceid
+                        "deviceid": deviceid,
+                        "starargs": arguments
                     }
                     command(webhook_url, todo)
 
@@ -281,7 +265,6 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         raise HomeAssistantError(f"{error}")
 
     hass.services.register(DOMAIN, "push", pixlet_push)
-    hass.services.register(DOMAIN, "publish", pixlet_publish)
     hass.services.register(DOMAIN, "text", pixlet_text)
     hass.services.register(DOMAIN, "delete", pixlet_delete)
 
