@@ -6,6 +6,6 @@
   "dependencies": [],
   "iot_class": "cloud_polling",
   "single_config_entry": true,
-  "version": "1.0.13",
+  "version": "1.0.12",
   "loggers": ["custom_components.tidbytassistant"]
 }
