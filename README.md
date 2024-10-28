@@ -71,11 +71,11 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 4. Select your device(s) and run the action. You should see your text on the screen.
 
 ### Adding app to your regular app rotation
-#### Use the action TidbytAssistant: Publish
+#### Use the action TidbytAssistant: Push
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
-3. In the *Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
-4. Enter a unique name in the *Content ID* field.
+3. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
+4. Enter a unique name in the *Content ID* field. (specifying this is what adds the app to the rotation)
 5. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
 6. Select you device(s) and run the action to add your app to your app rotation.
 
