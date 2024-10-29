@@ -7,7 +7,8 @@ push:
       required: false
       selector:
         select:
-          options: null
+          options: 
+            - null
     customcontent:
       name: Custom Content
       description: 'Type the name of the custom content you want to display. Example:
@@ -75,7 +76,8 @@ push:
       selector:
         select:
           multiple: true
-          options: null
+          options: 
+            - null
 delete:
   name: Delete
   fields:
@@ -229,4 +231,5 @@ text:
       selector:
         select:
           multiple: true
-          options: null
+          options: 
+            - null
