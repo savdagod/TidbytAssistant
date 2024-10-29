@@ -1,5 +1,6 @@
 push:
   name: Push
+  description: Push content to Tidbyt device.
   fields:
     content:
       name: Content
@@ -80,6 +81,7 @@ push:
             - device
 delete:
   name: Delete
+  description: Delete an app from the rotation.
   fields:
     contentid:
       name: Content ID
@@ -98,6 +100,7 @@ delete:
             - device
 text:
   name: Text
+  description: Push custom text to a Tidbyt device.
   fields:
     texttype:
       name: Text Type
