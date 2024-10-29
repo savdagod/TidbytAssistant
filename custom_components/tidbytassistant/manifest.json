@@ -2,10 +2,10 @@
   "domain": "tidbytassistant",
   "name": "TidbytAssistant",
   "codeowners": ["@savdagod"],
-  "documentation": "https://github.com/savdagod/TidbytAssistant",
   "dependencies": [],
+  "documentation": "https://github.com/savdagod/TidbytAssistant",
   "iot_class": "cloud_polling",
+  "loggers": ["custom_components.tidbytassistant"],
   "single_config_entry": true,
-  "version": "1.0.13",
-  "loggers": ["custom_components.tidbytassistant"]
+  "version": "1.0.13"
 }
