@@ -76,6 +76,7 @@ push:
         select:
           multiple: true
           options:
+            - placeholder
 delete:
   name: Delete
   fields:
@@ -93,6 +94,7 @@ delete:
         select:
           multiple: true
           options:
+            - placeholder
 text:
   name: Text
   fields:
@@ -229,3 +231,4 @@ text:
         select:
           multiple: true
           options:
+            - placeholder
