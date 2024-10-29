@@ -208,7 +208,7 @@ text:
     contentid:
       name: Content ID
       description: The Content ID you set when publishing your app. Specifying this adds the app to the rotation.
-      required: fasle
+      required: False
       selector:
         text: null
     publishtype:
