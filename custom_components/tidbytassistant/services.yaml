@@ -92,7 +92,8 @@ delete:
       selector:
         select:
           multiple: true
-          options: null
+          options: 
+            - null
 text:
   name: Text
   fields:
