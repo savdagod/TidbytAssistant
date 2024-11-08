@@ -43,7 +43,7 @@ tidbytassistant:
 ```
 4. You can add as many devices as you want.
 5. Restart HomeAssistant.
-6. Once HomeAssistant restarts, you should now have an action called TidbytAssistant: Push. Use this in your automations to send notifiations.
+6. Once HomeAssistant restarts, you should now have multiple actions as well as light and seitch entities for each Tidbyt you've added. Use these in your automations to send notifiations, text, your own .star files or adjust the brightness of your display.
 
 ## Features
 
@@ -73,7 +73,7 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 ### Adding app to your regular app rotation
 #### Use the action TidbytAssistant: Push
 1. Create a folder in your **/config** directory called **tidbyt**.
-2. Place your .star file(s) in this folder.
+2. Create a folder for your app with your app name (myapp.star should be placed inside a folder called myapp) and your .star file(s) in this folder. Pixlet also supports apps with mutiple .star files, so all associated files should be in the same folder. It is best practice to have 1 folder per app regardless of how many .star files your app needs.
 3. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 4. Enter a unique name in the *Content ID* field. (specifying this is what adds the app to the rotation)
 5. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
