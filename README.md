@@ -146,4 +146,4 @@ This example has a varible "who", which can be used as the **key=value** pair **
 ```
 
 ### Troubleshooting
-The action should do a few checks when you run it and give feedback on what went wrong (ie if you enter an incorrect device name, it will give you a list of valid names). However, sometimes everything checks out on the HA side but won't on the add-on side. If you navigate to the add-on page and click 'Logs' you can see what went wrong if the action you ran is not giving you the desired results.
+The action should do a few checks when you run it and give feedback on what went wrong. However, sometimes everything checks out on the HA side but won't on the add-on side. If you navigate to the add-on page and click 'Logs' you can see what went wrong if the action you ran is not giving you the desired results.
