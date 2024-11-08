@@ -83,6 +83,7 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 #### Use the action TidbytAssistant: Delete
 1. Enter the content ID of the app you published and device name.
 2. Select you device(s) and run the action. The app should now be removed from your rotation.
+3. If the app you tried to delete is not installed on the Tidbyt, you will see a list of apps that are available for deletion. Only apps that you have sent through HomeAssistant will show up for deletion.
    
 ## Things to note
 ### Changing Ports
