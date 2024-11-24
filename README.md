@@ -43,7 +43,7 @@ tidbytassistant:
 ```
 4. You can add as many devices as you want.
 5. Restart HomeAssistant.
-6. Once HomeAssistant restarts, you should now have multiple actions as well as light and seitch entities for each Tidbyt you've added. Use these in your automations to send notifiations, text, your own .star files or adjust the brightness of your display.
+6. Once HomeAssistant restarts, you should now have multiple actions as well as light and switch entities for each Tidbyt you've added. Use these in your automations to send notifiations, text, your own .star files or adjust the brightness of your display.
 
 ## Features
 
@@ -79,7 +79,7 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 5. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
 6. Select you device(s) and run the action to add your app to your app rotation.
 
-### Deleting app from roation
+### Deleting app from rotation
 #### Use the action TidbytAssistant: Delete
 1. Enter the content ID of the app you published and device name.
 2. Select you device(s) and run the action. The app should now be removed from your rotation.
