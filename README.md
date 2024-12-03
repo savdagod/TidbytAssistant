@@ -3,10 +3,10 @@
 </p>
 </br>
 
-Display notifications from HomeAssistant to Tidbyt using this integration. 
+Display notifications from HomeAssistant to Tidbyt using this integration. Installation of the add-on is required.
 
 ## Installation
-First, install the TidbytAssistant add-on which can be found here (You **MUST** install this add-on whether it's through the add-on store or as a regular Docker container for Push, Publish and Text services to work):
+First, install the TidbytAssistant add-on which can be found here (You **MUST** install this add-on whether it's through the add-on store or as a regular Docker container for Push, Publish and Text services to work. If the add-on is not installed, the integration will not load.):
 
 ```txt
 https://github.com/savdagod/ha-addons
@@ -43,7 +43,7 @@ tidbytassistant:
 ```
 4. You can add as many devices as you want.
 5. Restart HomeAssistant.
-6. Once HomeAssistant restarts, you should now have an action called TidbytAssistant: Push. Use this in your automations to send notifiations.
+6. Once HomeAssistant restarts, you should now have multiple actions as well as light and switch entities for each Tidbyt you've added. Use these in your automations to send notifiations, text, your own .star files or adjust the brightness of your display.
 
 ## Features
 
@@ -73,16 +73,17 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 ### Adding app to your regular app rotation
 #### Use the action TidbytAssistant: Push
 1. Create a folder in your **/config** directory called **tidbyt**.
-2. Place your .star file(s) in this folder.
+2. Create a folder for your app with your app name (myapp.star should be placed inside a folder called myapp) and your .star file(s) in this folder. Pixlet also supports apps with mutiple .star files, so all associated files should be in the same folder. It is best practice to have 1 folder per app regardless of how many .star files your app needs.
 3. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
 4. Enter a unique name in the *Content ID* field. (specifying this is what adds the app to the rotation)
 5. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
 6. Select you device(s) and run the action to add your app to your app rotation.
 
-### Deleting app from roation
+### Deleting app from rotation
 #### Use the action TidbytAssistant: Delete
 1. Enter the content ID of the app you published and device name.
 2. Select you device(s) and run the action. The app should now be removed from your rotation.
+3. If the app you tried to delete is not installed on the Tidbyt, you will see a list of apps that are available for deletion. Only apps that you have sent through HomeAssistant will show up for deletion.
    
 ## Things to note
 ### Changing Ports
@@ -145,4 +146,4 @@ This example has a varible "who", which can be used as the **key=value** pair **
 ```
 
 ### Troubleshooting
-The action should do a few checks when you run it and give feedback on what went wrong (ie if you enter an incorrect device name, it will give you a list of valid names). However, sometimes everything checks out on the HA side but won't on the add-on side. If you navigate to the add-on page and click 'Logs' you can see what went wrong if the action you ran is not giving you the desired results.
+The action should do a few checks when you run it and give feedback on what went wrong. However, sometimes everything checks out on the HA side but won't on the add-on side. If you navigate to the add-on page and click 'Logs' you can see what went wrong if the action you ran is not giving you the desired results.
