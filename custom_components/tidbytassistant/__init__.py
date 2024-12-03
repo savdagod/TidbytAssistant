@@ -3,6 +3,7 @@ import os
 import requests
 import yaml
 import re
+import time
 from typing import Dict
 from .const import (
     DOMAIN, 
@@ -11,7 +12,8 @@ from .const import (
     CONF_ID, 
     CONF_PORT, 
     CONF_HOST, 
-    CONF_NAME, 
+    CONF_NAME,
+    CONF_TIMEOUT, 
     ATTR_CONTENT, 
     ATTR_CONTENT_ID,
     ATTR_DEVICENANME, 
@@ -41,6 +43,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_PORT = "9000"
 DEFAULT_HOST = "localhost"
+DEFAULT_TIMEOUT = 30
 DEFAULT_TITLE = ""
 DEFAULT_TITLE_COLOR = ""
 DEFAULT_TITLE_FONT = ""
@@ -62,6 +65,7 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Required(CONF_DEVICE): vol.All(cv.ensure_list, [TIDBYT_SCHEMA]),
                 vol.Optional(CONF_HOST): cv.string,
                 vol.Optional(CONF_PORT): cv.string,
+                vol.Optional(CONF_TIMEOUT): cv.string
             }
         ),
     },
@@ -83,13 +87,21 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     conf = config[DOMAIN]
     host = conf.get(CONF_HOST,DEFAULT_HOST)
     port = conf.get(CONF_PORT,DEFAULT_PORT)
+    timeout = time.time() + conf.get(CONF_TIMEOUT,DEFAULT_TIMEOUT)
     url = f"http://{host}:{port}"
 
-    try:
-        response = requests.get(f"{url}/apps")
-    except:
-        _LOGGER.error("Could not connect to the add-on. Make sure it is installed or running and try again.")
-        return False
+    while True:
+        try:
+            response = requests.get(f"{url}/apps")
+            status = f"{response.status_code}"
+            if status == "200":
+                break
+        except:
+            pass
+        if time.time() > timeout:
+            _LOGGER.error(f"Connection to add-on timed out after {conf.get(CONF_TIMEOUT,DEFAULT_TIMEOUT)} seconds. Make sure it is installed or running and try again.")
+            return False
+        time.sleep(5)
     
     config_dir = hass.config.path()
     yaml_path = os.path.join(config_dir, "custom_components", "tidbytassistant", "services.yaml")
