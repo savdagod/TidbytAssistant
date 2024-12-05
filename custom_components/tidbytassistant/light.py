@@ -2,6 +2,8 @@ import logging
 import requests
 import math
 import time
+import aiohttp
+import asyncio
 from typing import Any
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
@@ -19,7 +21,7 @@ from .const import DOMAIN, CONF_DEVICE, CONF_NAME, CONF_TOKEN, CONF_ID
 
 _LOGGER = logging.getLogger(__name__)
 
-def setup_platform(hass: HomeAssistant, config: ConfigType, add_entities: AddEntitiesCallback, discovery_info: DiscoveryInfoType | None = None) -> None:
+async def async_setup_platform(hass: HomeAssistant, config: ConfigType, add_entities: AddEntitiesCallback, discovery_info: DiscoveryInfoType | None = None) -> None:
     if discovery_info is None:
         return
 
@@ -43,15 +45,7 @@ class TidbytLight(LightEntity):
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
-        response = requests.get(self._url, headers=self._header)    
-        status = f"{response.status_code}"
-        if status != "200":
-            self._brightness = None
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
-        else:
-            data = response.json()
-            self._brightness = round((data.get("brightness", 0)*.01) * 255)
+        self._brightness = None
 
     @property
     def name(self):
@@ -75,7 +69,7 @@ class TidbytLight(LightEntity):
         """Return true if light is on."""
         return self._is_on
     
-    def turn_on(self, **kwargs: any) -> None:
+    async def async_turn_on(self, **kwargs: any) -> None:
         """Instruct the light to turn on."""
         if ATTR_BRIGHTNESS in kwargs:
             brightness = round((kwargs[ATTR_BRIGHTNESS] / 255) * 100)
@@ -85,31 +79,32 @@ class TidbytLight(LightEntity):
         payload = {
             "brightness": int(brightness)
         }
-        response = requests.patch(self._url, headers=self._header, json=payload)
-        
-        status = f"{response.status_code}"
-        if status != "200":
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
-        else:
-            self._brightness = brightness
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(self._url, headers=self._header, json=payload) as response:        
+                status = f"{response.status}"
+                if status != "200":
+                    error = await response.text()
+                    _LOGGER.error(f"{error}")
+                else:
+                    self._brightness = brightness
 
-    def turn_off(self, **kwargs: any) -> None:
+    async def async_turn_off(self, **kwargs: any) -> None:
         """do nothing"""
         
-    def update(self) -> None:
+    async def async_update(self) -> None:
         """Fetch new state data for this light."""
-        response = requests.get(self._url, headers=self._header)
-        status = f"{response.status_code}"
-        if status != "200":
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
-        else:
-            data = response.json()
-            self._is_on = data.get("brightness", 0) >= 1
-            self._brightness = round((data.get("brightness", 0)*.01) * 255)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(self._url, headers=self._header) as response:
+                status = f"{response.status}"
+                if status != "200":
+                    error = await response.text()
+                    _LOGGER.error(f"{error}")
+                else:
+                    data = await response.json()
+                    self._is_on = data.get("brightness", 0) >= 1
+                    self._brightness = round((data.get("brightness", 0)*.01) * 255)
 
-    def poll_device(self):
+    async def async_poll_device(self):
         while True:
             self.update()
-            time.sleep(30)
+            await asyncio.sleep(30)

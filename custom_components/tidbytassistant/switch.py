@@ -1,5 +1,7 @@
 import logging
 import requests
+import aiohttp
+import asyncio
 from typing import Any
 
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity
@@ -12,7 +14,7 @@ from .const import DOMAIN, CONF_DEVICE, CONF_NAME, CONF_TOKEN, CONF_ID
 
 _LOGGER = logging.getLogger(__name__)
 
-def setup_platform(hass: HomeAssistant, config: ConfigType, add_entities: AddEntitiesCallback, discovery_info: DiscoveryInfoType | None = None) -> None:
+async def async_setup_platform(hass: HomeAssistant, config: ConfigType, add_entities: AddEntitiesCallback, discovery_info: DiscoveryInfoType | None = None) -> None:
     if discovery_info is None:
         return
 
@@ -35,15 +37,8 @@ class TidbytSwitch(SwitchEntity):
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
-        response = requests.get(self._url, headers=self._header)
-        status = f"{response.status_code}"
-        if status != "200":
-            self._brightness = None
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
-        else:
-            data = response.json()
-            self._is_on = data.get("autoDim")    
+        self._brightness = None
+        self._is_on = None 
 
     @property
     def name(self):
@@ -62,38 +57,40 @@ class TidbytSwitch(SwitchEntity):
     def is_on(self) -> bool | None:
         return self._is_on
 
-    def turn_on(self, **kwargs: Any) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         payload = {
             "autoDim": True
         }
-        response = requests.patch(self._url, headers=self._header, json=payload)
-        status = f"{response.status_code}"
-        if status != "200":
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(self._url, headers=self._header, json=payload) as response:
+                status = f"{response.status}"
+                if status != "200":
+                    error = await response.text()
+                    _LOGGER.error(f"{error}")
 
-    def turn_off(self, **kwargs: Any) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         payload = {
             "autoDim": False
         }
-        response = requests.patch(self._url, headers=self._header, json=payload)
-        status = f"{response.status_code}"
-        if status != "200":
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(self._url, headers=self._header, json=payload) as response:
+                status = f"{response.status}"
+                if status != "200":
+                    error = await response.text()
+                    _LOGGER.error(f"{error}")
 
-    def update(self) -> None:
-        response = requests.get(self._url, headers=self._header)
-        
-        data = response.json()
-        status = f"{response.status_code}"
-        if status != "200":
-            error = f"{response.text}"
-            _LOGGER.error(f"{error}")
-        else:
-            self._is_on = data.get("autoDim")
+    async def async_update(self) -> None:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(self._url, headers=self._header) as response:       
+                data = await response.json()
+                status = f"{response.status}"
+                if status != "200":
+                    error = await response.text()
+                    _LOGGER.error(f"{error}")
+                else:
+                    self._is_on = data.get("autoDim")
 
-    def poll_device(self):
+    async def async_poll_device(self):
         while True:
             self.update()
             time.sleep(30)

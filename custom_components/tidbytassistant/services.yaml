@@ -5,24 +5,51 @@ push:
     content:
       name: Content
       description: The content you want displayed on the Tidbyt.
-      required: False
+      required: false
       selector:
         select:
-          options: 
-            - content
+          options:
+          - label: Coffee
+            value: coffee
+          - label: Dishwasher
+            value: dishwasher
+          - label: Doorbell
+            value: doorbell
+          - label: Dryer
+            value: dryer
+          - label: Filters
+            value: filters
+          - label: Fridge
+            value: fridge
+          - label: Garage Closed
+            value: garageclosed
+          - label: Garage Closing
+            value: garagclosing
+          - label: Garage Open
+            value: garageopen
+          - label: Trash
+            value: trash
+          - label: Trash Bins Out
+            value: trashbinsout
+          - label: Trash and Recycling
+            value: trashrecycle
+          - label: Trash and Recycling Bins Out
+            value: trashrecbinsout
+          - label: Washer
+            value: washer
     customcontent:
       name: Custom Content
       description: 'Type the name of the custom content you want to display. Example:
         For custom you added ''example.star'' to /config/tidbyt then you would type
         ''example'' here.'
-      required: False
+      required: false
       selector:
         text: null
     contenttype:
       name: Content Type
       description: Select between the built-in content or custom content. Custom content
         should be a .star file placed inside /config/tidbyt.
-      required: True
+      required: true
       default: builtin
       selector:
         select:
@@ -35,14 +62,14 @@ push:
       name: Content ID
       description: A unique name for your app. Alpha numeric characters only (A-Z,
         a-z or 0-9).
-      required: False
+      required: false
       selector:
         text: null
     publishtype:
       name: Publish Type
       description: How you want content published. Background publishes without replacing
         the current app and Foreground will publish and also show you the app instantly.
-      required: True
+      required: true
       default: foreground
       selector:
         select:
@@ -54,7 +81,7 @@ push:
     language:
       name: Language
       description: Language to display built-in content.
-      required: False
+      required: false
       default: en
       selector:
         select:
@@ -67,37 +94,42 @@ push:
       name: Arguments
       description: 'Arguments you want to send to your .star app. This must be a key=value
         pair, separated by a semi-colon (;). Example: key=value;key2=value 2;key3=value3'
-      required: False
+      required: false
       selector:
         text: null
     devicename:
       name: Device Name
       description: The Tidbyt device you want content to be displayed to.
-      required: True
+      required: true
       selector:
         select:
-          multiple: True
-          options: 
-            - device
+          multiple: true
+          options: &id001
+          - label: Living Room
+            value: Living Room
+          - label: Office
+            value: Office
+          - label: Loft
+            value: Loft
 delete:
   name: Delete
   description: Delete an app from the rotation.
   fields:
     contentid:
       name: Content ID
-      description: The Content ID you set when publishing your app. Specifying this adds the app to the rotation.
-      required: True
+      description: The Content ID you set when publishing your app. Specifying this
+        adds the app to the rotation.
+      required: true
       selector:
         text: null
     devicename:
       name: Device Name
       description: The Tidbyt device you want to delete the app from.
-      required: True
+      required: true
       selector:
         select:
-          multiple: True
-          options: 
-            - device
+          multiple: true
+          options: *id001
 text:
   name: Text
   description: Push custom text to a Tidbyt device.
@@ -106,7 +138,7 @@ text:
       name: Text Type
       description: How you want the text displayed.
       default: regular
-      required: True
+      required: true
       selector:
         select:
           options:
@@ -119,13 +151,13 @@ text:
     content:
       name: Content
       description: The text you want displayed.
-      required: True
+      required: true
       selector:
         text: null
     font:
       name: Font
       description: Font for the text.
-      required: True
+      required: true
       default: tb-8
       selector:
         select:
@@ -143,7 +175,7 @@ text:
     color:
       name: Color
       description: Font color for the text.
-      required: True
+      required: true
       default: '#fff'
       selector:
         select:
@@ -165,13 +197,13 @@ text:
     titlecontent:
       name: Title Content
       description: The text you want for the title.
-      required: False
+      required: false
       selector:
         text: null
     titlefont:
       name: Title Font
       description: Font for the title.
-      required: False
+      required: false
       default: 6x13
       selector:
         select:
@@ -189,7 +221,7 @@ text:
     titlecolor:
       name: Title Color
       description: Font color for the title.
-      required: False
+      required: false
       default: '#00f'
       selector:
         select:
@@ -210,15 +242,16 @@ text:
             value: '#0f0'
     contentid:
       name: Content ID
-      description: The Content ID you set when publishing your app. Specifying this adds the app to the rotation.
-      required: False
+      description: The Content ID you set when publishing your app. Specifying this
+        adds the app to the rotation.
+      required: false
       selector:
         text: null
     publishtype:
       name: Publish Type
       description: How you want content published. Background publishes without replacing
         the current app and Foreground will publish and also show you the app instantly.
-      required: True
+      required: true
       default: foreground
       selector:
         select:
@@ -230,9 +263,8 @@ text:
     devicename:
       name: Device Name
       description: The Tidbyt device you want content to be displayed to.
-      required: True
+      required: true
       selector:
         select:
-          multiple: True
-          options: 
-            - device
+          multiple: true
+          options: *id001
