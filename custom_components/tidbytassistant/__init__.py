@@ -5,6 +5,7 @@ import re
 import asyncio
 import aiofiles
 import aiohttp
+import time
 from typing import Dict
 from .addon import get_addon_manager
 from .const import (
@@ -130,6 +131,21 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         if not is_min_version(addon_current_ver, ADDON_MIN_VERSION):
             _LOGGER.error(f"The minimum required add-on version is {ADDON_MIN_VERSION} but the currently installed version is {addon_current_ver}. Please update the add-on to the latest version.")
             return False
+    else:
+        timeout = time.time() + 60
+        while True:
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(f"{url}/apps") as response:
+                        status = f"{response.status}"
+                        if status == "200":
+                            break
+            except:
+                pass
+            if time.time() > timeout:
+                _LOGGER.error(f"Connection to add-on timed out after 60 seconds. Make sure it is installed or running and try again.")
+                return False
+            await asyncio.sleep(5)
             
     config_dir = hass.config.path()
     yaml_path = os.path.join(config_dir, "custom_components", "tidbytassistant", "services.yaml")
