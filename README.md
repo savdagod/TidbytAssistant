@@ -6,6 +6,8 @@
 Display notifications from HomeAssistant to Tidbyt using this integration. Installation of the add-on is required.
 
 # Installation
+
+## Addon
 First, install the TidbytAssistant add-on which can be found here (You **MUST** install this add-on whether it's through the add-on store or as a regular Docker container for Push, Publish and Text services to work. If the add-on is not installed, the integration will not load.):
 
 ```txt
@@ -44,6 +46,64 @@ tidbytassistant:
 5. Restart HomeAssistant.
 6. Once HomeAssistant restarts, you should now have multiple actions as well as light and switch entities for each Tidbyt you've added. Use these in your automations to send notifiations, text, your own .star files or adjust the brightness of your display.
 
+## Changing Ports
+By default, this integration sends the request on port 9000. If for some reason that port is in use, you can change it in the add-on configuration. Be sure to also change it in your configuration.yaml like so:
+```txt
+tidbytassistant:
+  port: 5000
+  device:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+    - name: another device name
+      ...
+```
+
+## Changing Hosts
+By default, this integration sends the request to locahost. If you want to host the add-on separately or using HA Core then you can change the host in the configuration:
+```txt
+tidbytassistant:
+  host: 192.168.1.200
+  device:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+    - name: another device name
+      ...
+```
+
+## External container
+If you run the addon as a separate container (ie not part of HomeAssistant), you can set *external_addon* to true like so:
+```txt
+tidbytassistant:
+  host: 192.168.1.200
+  port: 1234
+  external_addon: true
+  device:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+    - name: another device name
+      ...
+```
+
+## Using secrets file
+I also recommend that you use the secrets.yaml file to store your ID and Key. Add these to secrets.yaml:
+```txt
+tidbyt_id: device_id_from_previous_step
+tidbyt_key: key_from_previous_step
+```
+Then your configuration will look like this:
+```txt
+tidbytassistant:
+  device:
+    - name: your device name
+      deviceid: !secret tidbyt_id
+      token: !secret tidbyt_key
+    - name: another device name
+      ...
+```
+
 # Features
 
 ## Light and switch entities
@@ -67,71 +127,13 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 2. In the *Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
 4. Select your device(s) and run the action. You should see your text on the screen.
    
-#### TidbytAssistant: Delete
+### TidbytAssistant: Delete
 1. Enter the content ID of the app you published and device name.
 2. Select you device(s) and run the action. The app should now be removed from your rotation.
 3. If the app you tried to delete is not installed on the Tidbyt, you will see a list of apps that are available for deletion. Only apps that you have sent through HomeAssistant will show up for deletion.
    
-## Things to note
-### Changing Ports
-By default, this integration sends the request on port 9000. If for some reason that port is in use, you can change it in the add-on configuration. Be sure to also change it in your configuration.yaml like so:
-```txt
-tidbytassistant:
-  port: 5000
-  device:
-    - name: your device name
-      deviceid: device_id_from_previous_step
-      token: key_from_previous_step
-    - name: another device name
-      ...
-```
-
-### Changing Hosts
-By default, this integration sends the request to locahost. If you want to host the add-on separately or using HA Core then you can change the host in the configuration:
-```txt
-tidbytassistant:
-  host: 192.168.1.200
-  device:
-    - name: your device name
-      deviceid: device_id_from_previous_step
-      token: key_from_previous_step
-    - name: another device name
-      ...
-```
-
-### External container
-If you run the addon as a separate container (ie not part of HomeAssistant), you can set *external_addon* to true like so:
-```txt
-tidbytassistant:
-  host: 192.168.1.200
-  port: 1234
-  external_addon: true
-  device:
-    - name: your device name
-      deviceid: device_id_from_previous_step
-      token: key_from_previous_step
-    - name: another device name
-      ...
-```
-
-### Using secrets file
-I also recommend that you use the secrets.yaml file to store your ID and Key. Add these to secrets.yaml:
-```txt
-tidbyt_id: device_id_from_previous_step
-tidbyt_key: key_from_previous_step
-```
-Then your configuration will look like this:
-```txt
-tidbytassistant:
-  device:
-    - name: your device name
-      deviceid: !secret tidbyt_id
-      token: !secret tidbyt_key
-    - name: another device name
-      ...
-```
-
-### Passing arguments
+# Things to note
+## Passing arguments
 Passing arguments to your app can be helpful because it removes the need to hard code values. It also allows you to pass in templated values directly to your apps. The following example is taken from the Pixlet docs and is how you would use these varibles inside your app:
 ```
 def main(config):
@@ -147,5 +149,5 @@ This example has a varible "who", which can be used as the **key=value** pair **
     }};title={{ states('input_text.movie_night_movie') }}
 ```
 
-### Troubleshooting
+# Troubleshooting
 The action should do a few checks when you run it and give feedback on what went wrong. However, sometimes everything checks out on the HA side but won't on the add-on side. If you navigate to the add-on page and click 'Logs' you can see what went wrong if the action you ran is not giving you the desired results.
