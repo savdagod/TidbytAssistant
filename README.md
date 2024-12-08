@@ -47,17 +47,16 @@ tidbytassistant:
 
 ## Features
 
-### NEW! Light and switch entities
+### Light and switch entities
 The integration will expose each devices' sceen as a light entity. The autodim feature is exposed as a switch entity. The states are fetched every 30s.
 
-### Pushing built-in notifications
-#### Use the action TidbytAssistant: Push
+### Services
+#### TidbytAssistant: Push
 1. Select the radio button for *Built-in*.
 2. Use the *Content* dropdown to select from the built in notifications. These are apps that I have built that have little animations for notifications.
 3. Select you device(s) and run the action.
 
-### Pushing your own files
-#### Use the action TidbytAssistant: Push
+##### Pushing your own files
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Place your .star file(s) in this folder.
 3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
@@ -70,8 +69,8 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 2. In the *Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
 4. Select your device(s) and run the action. You should see your text on the screen.
 
-### Adding app to your regular app rotation
-#### Use the action TidbytAssistant: Push
+### Publish app to your Tidbyt
+#### Use the action TidbytAssistant: Push (previously Publish)
 1. Create a folder in your **/config** directory called **tidbyt**.
 2. Create a folder for your app with your app name (myapp.star should be placed inside a folder called myapp) and your .star file(s) in this folder. Pixlet also supports apps with mutiple .star files, so all associated files should be in the same folder. It is best practice to have 1 folder per app regardless of how many .star files your app needs.
 3. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
@@ -104,6 +103,21 @@ By default, this integration sends the request to locahost. If you want to host 
 ```txt
 tidbytassistant:
   host: 192.168.1.200
+  device:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+    - name: another device name
+      ...
+```
+
+### External container
+If you run the addon as a separate container (ie not part of HomeAssistant), you can set *external_addon* to true like so:
+```txt
+tidbytassistant:
+  host: 192.168.1.200
+  port: 1234
+  external_addon: true
   device:
     - name: your device name
       deviceid: device_id_from_previous_step
