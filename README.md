@@ -46,7 +46,7 @@ tidbytassistant:
 5. Restart HomeAssistant.
 6. Once HomeAssistant restarts, you should now have multiple actions as well as light and switch entities for each Tidbyt you've added. Use these in your automations to send notifiations, text, your own .star files or adjust the brightness of your display.
 
-## Changing Ports
+### Changing Ports
 By default, this integration sends the request on port 9000. If for some reason that port is in use, you can change it in the add-on configuration. Be sure to also change it in your configuration.yaml like so:
 ```txt
 tidbytassistant:
@@ -59,7 +59,7 @@ tidbytassistant:
       ...
 ```
 
-## Changing Hosts
+### Changing Hosts
 By default, this integration sends the request to locahost. If you want to host the add-on separately or using HA Core then you can change the host in the configuration:
 ```txt
 tidbytassistant:
@@ -72,7 +72,7 @@ tidbytassistant:
       ...
 ```
 
-## External container
+### External container
 If you run the addon as a separate container (ie not part of HomeAssistant), you can set *external_addon* to true like so:
 ```txt
 tidbytassistant:
@@ -87,7 +87,7 @@ tidbytassistant:
       ...
 ```
 
-## Using secrets file
+### Using secrets file
 I also recommend that you use the secrets.yaml file to store your ID and Key. Add these to secrets.yaml:
 ```txt
 tidbyt_id: device_id_from_previous_step
