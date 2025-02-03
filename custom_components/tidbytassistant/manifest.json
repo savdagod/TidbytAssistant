@@ -2,7 +2,7 @@
   "domain": "tidbytassistant",
   "name": "TidbytAssistant",
   "codeowners": ["@savdagod"],
-  "dependencies": ["hassio"],
+  "dependencies": "",
   "documentation": "https://github.com/savdagod/TidbytAssistant",
   "iot_class": "cloud_polling",
   "loggers": ["custom_components.tidbytassistant"],
