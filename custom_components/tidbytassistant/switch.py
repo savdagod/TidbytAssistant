@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, CONF_DEVICE, CONF_NAME, CONF_TOKEN, CONF_ID
+from .const import DOMAIN, CONF_DEVICE, CONF_NAME, CONF_TOKEN, CONF_ID, CONF_API_URL, DEFAULT_API_URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,14 +24,17 @@ async def async_setup_platform(hass: HomeAssistant, config: ConfigType, add_enti
 
 class TidbytSwitch(SwitchEntity):
     def __init__(self, tidbyt):
-        self._name = tidbyt["name"]
-        self._deviceid = tidbyt["deviceid"]
-        self._token = tidbyt["token"]
+        self._name = tidbyt[CONF_NAME]
+        self._deviceid = tidbyt[CONF_ID]
+        self._token = tidbyt[CONF_TOKEN]
         
         append = self._deviceid.split('-')
-        self._entity_id = f"switch.{self._name.replace(" ","_")}_{append[3]}"
+        if len(append) > 3:
+            self._entity_id = f"switch.{self._name.replace(" ","_")}_{append[3]}"
+        else:
+            self._entity_id = f"switch.{self._name.replace(" ","_")}"
         
-        self._url = f"https://api.tidbyt.com/v0/devices/{self._deviceid}"
+        self._url = f"{tidbyt.get(CONF_API_URL, DEFAULT_API_URL)}/v0/devices/{self._deviceid}"
         self._header = {
             "Authorization": f"Bearer {self._token}",
             "Content-Type": "application/json",
@@ -42,8 +45,10 @@ class TidbytSwitch(SwitchEntity):
 
     @property
     def name(self):
-        append = self._deviceid.split('-')
-        return f"{self._name} {append[3].capitalize()} AutoDim"
+        id_components = self._deviceid.split('-')
+        if len(id_components) > 3:
+            return f"{self._name} {id_components[3].capitalize()} AutoDim"
+        return f"{self._name} AutoDim"
 
     @property
     def unique_id(self):

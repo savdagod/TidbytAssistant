@@ -46,6 +46,20 @@ tidbytassistant:
 5. Restart HomeAssistant.
 6. Once HomeAssistant restarts, you should now have multiple actions as well as light and switch entities for each Tidbyt you've added. Use these in your automations to send notifiations, text, your own .star files or adjust the brightness of your display.
 
+### Changing API Endpoint
+
+By default, this integration communicates with the Tidbyt servers (directly and through the add-on). If you use a different server (for example https://github.com/tavdog/tronbyt-server), you can configure this per device like so:
+```txt
+tidbytassistant:
+  device:
+    - name: your device name
+      deviceid: device_id_from_previous_step
+      token: key_from_previous_step
+      apiurl: your_server_url
+    - name: another device name
+      ...
+```
+
 ### Changing Ports
 By default, this integration sends the request on port 9000. If for some reason that port is in use, you can change it in the add-on configuration. Be sure to also change it in your configuration.yaml like so:
 ```txt
@@ -117,15 +131,25 @@ The integration will expose each devices' sceen as a light entity. The autodim f
 
 #### Pushing your own files
 1. Create a folder in your **/config** directory called **tidbyt**.
-2. Place your .star file(s) in this folder.
-3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the file name minus the '.star'. Example: If your file is named *custom.star*, you will enter *custom* in the field.
+2. Place your `.star` file(s) into a subdirectory of this folder.
+3. Select the radio button for *Custom*. In the *Custom Content* text box, enter the name of the app directory. Example: If your files is named */config/tidbyt/myapp/custom.star*, you will enter *myapp* in the field.
 4. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
 5. Select your device(s) and run the action to see it displayed on your Tidbyt.
+
+### Pushing a Tidbyt Community app
+
+1. Create a folder in your **/config** directory called **tidbyt**, if it doesn't exist already.
+2. Clone the Tidbyt Community repository into this directory: `git clone --depth=1 https://github.com/tidbyt/community`.
+3. Set up a push action using as a custom content using the name `community/apps/myapp`.
+4. You can also pass in arguments as key=value pairs. in the *Arguments* box you can enter these pairs like this, separated with a semi-colon (;): ***key=value;key2=value 2***. (Scroll down to **Passing arguments** to see an example of how this works)
+5. Select your device(s) and run the action to see it displayed on your Tidbyt.
+
+Note: community apps which store credentials in the Tidbyt cloud will not have access to them and likely not work as expected.
   
 ### TidbytAssistant: Text
 1. Select the radio buttom for *Text*
 2. In the *Content* box, enter the text you want displayed. You can also select from the avaialble fonts and colors as well as static text or scrolling.
-4. Select your device(s) and run the action. You should see your text on the screen.
+3. Select your device(s) and run the action. You should see your text on the screen.
    
 ### TidbytAssistant: Delete
 1. Enter the content ID of the app you published and device name.
