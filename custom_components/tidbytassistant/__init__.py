@@ -17,6 +17,7 @@ from .const import (
     CONF_HOST, 
     CONF_NAME,
     CONF_EXTERNALADDON,
+    CONF_API_URL,
     ATTR_CONTENT, 
     ATTR_CONTENT_ID,
     ATTR_DEVICENANME, 
@@ -33,7 +34,8 @@ from .const import (
     ATTR_BRIGHTNESS,
     ATTR_AUTODIM,
     ATTR_LANG,
-    ADDON_MIN_VERSION
+    ADDON_MIN_VERSION,
+    DEFAULT_API_URL
 )
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.helpers.typing import ConfigType
@@ -62,6 +64,7 @@ TIDBYT_SCHEMA = vol.Schema(
         vol.Optional(CONF_NAME): cv.string, 
         vol.Required(CONF_ID): cv.string,
         vol.Required(CONF_TOKEN): cv.string,
+        vol.Optional(CONF_API_URL): cv.string
     }
 )
 CONFIG_SCHEMA = vol.Schema(
@@ -78,8 +81,8 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
-async def getdevicename(deviceid, token) -> str:
-    url = f"https://api.tidbyt.com/v0/devices/{deviceid}"
+async def getdevicename(endpoint, deviceid, token) -> str:
+    url = f"{endpoint}/v0/devices/{deviceid}"
     header = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
@@ -140,10 +143,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         status = f"{response.status}"
                         if status == "200":
                             break
-            except:
+            except aiohttp.ClientError:
                 pass
             if time.time() > timeout:
-                _LOGGER.error(f"Connection to add-on timed out after 60 seconds. Make sure it is installed or running and try again.")
+                _LOGGER.error("Connection to add-on timed out after 60 seconds. Make sure it is installed or running and try again.")
                 return False
             await asyncio.sleep(5)
             
@@ -154,13 +157,17 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         config = yaml.safe_load(content)
     
     devicelist = []
-    for item in conf[CONF_DEVICE]:
-        if CONF_NAME in item:
-            devicelist.append(item[CONF_NAME])
+    for device in conf[CONF_DEVICE]:
+        if CONF_NAME in device:
+            devicelist.append(device[CONF_NAME])
         else:
-            retrievedname = await getdevicename(item[CONF_ID],item[CONF_TOKEN])
+            retrievedname = await getdevicename(
+                device.get(CONF_API_URL, DEFAULT_API_URL),
+                device[CONF_ID],
+                device[CONF_TOKEN]
+            )
             devicelist.append(retrievedname)
-            item[CONF_NAME] = retrievedname
+            device[CONF_NAME] = retrievedname
 
     device_name_options = [{"label": name, "value": name} for name in devicelist]
 
@@ -188,8 +195,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         pattern = r'^[A-Za-z0-9]+$'
         return bool(re.match(pattern, input))
 
-    async def getinstalledapps(deviceid, token):
-        url = f"https://api.tidbyt.com/v0/devices/{deviceid}/installations"
+    async def getinstalledapps(endpoint, deviceid, token):
+        url = f"{endpoint}/v0/devices/{deviceid}/installations"
         header = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
@@ -253,6 +260,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         "deviceid": deviceid,
                         "starargs": arguments,
                     }
+                    if CONF_API_URL in item:
+                        todo["base_url"] = item[CONF_API_URL]
                     await command(webhook_url, todo)
 
     async def pixlet_text(call: ServiceCall) -> None:
@@ -286,8 +295,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         "texttype": texttype, 
                         "token": token, 
                         "deviceid": deviceid,
-                        "starargs": arguments
+                        "starargs": arguments,
                     }
+                    if CONF_API_URL in item:
+                        todo["base_url"] = item[CONF_API_URL]
                     await command(webhook_url, todo)
 
     async def pixlet_delete(call: ServiceCall) -> None:
@@ -302,13 +313,14 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 if item[CONF_NAME] == device:
                     token = item[CONF_TOKEN]
                     deviceid = item[CONF_ID]
-                    
-                    validids = await getinstalledapps(deviceid, token)
+                    base_url = item.get(CONF_API_URL, DEFAULT_API_URL)
+
+                    validids = await getinstalledapps(base_url, deviceid, token)
                     if contentid not in validids:
                         _LOGGER.error(f"The Content ID you entered is not an installed app on {device}. Currently installed apps are: {validids}")
-                        raise HomeAssistantError(f"The Contend ID you entered is not an installed app on {device}. Currently installed apps are: {validids}")
+                        raise HomeAssistantError(f"The Content ID you entered is not an installed app on {device}. Currently installed apps are: {validids}")
                     
-                    url = f"https://api.tidbyt.com/v0/devices/{deviceid}/installations/{contentid}"
+                    url = f"{base_url}/v0/devices/{deviceid}/installations/{contentid}"
                     header = {
                         "Authorization": f"Bearer {token}",
                         "Content-Type": "application/json",

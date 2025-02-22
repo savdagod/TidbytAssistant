@@ -17,7 +17,7 @@ from homeassistant.const import STATE_ON, STATE_OFF, STATE_UNAVAILABLE
 
 BRIGHTNESS_SCALE = (1, 100)
 
-from .const import DOMAIN, CONF_DEVICE, CONF_NAME, CONF_TOKEN, CONF_ID
+from .const import DOMAIN, CONF_DEVICE, CONF_NAME, CONF_TOKEN, CONF_ID, CONF_API_URL, DEFAULT_API_URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,11 +34,11 @@ class TidbytLight(LightEntity):
     _attr_supported_color_modes = {ColorMode.BRIGHTNESS}
 
     def __init__(self, tidbyt):
-        self._name = tidbyt["name"]
-        self._deviceid = tidbyt["deviceid"]
-        self._token = tidbyt["token"]
+        self._name = tidbyt[CONF_NAME]
+        self._deviceid = tidbyt[CONF_ID]
+        self._token = tidbyt[CONF_TOKEN]
         self._is_on = True
-        self._url = f"https://api.tidbyt.com/v0/devices/{self._deviceid}"
+        self._url = f"{tidbyt.get(CONF_API_URL, DEFAULT_API_URL)}/v0/devices/{self._deviceid}"
 
         self._header = {
             "Authorization": f"Bearer {self._token}",
@@ -49,8 +49,10 @@ class TidbytLight(LightEntity):
 
     @property
     def name(self):
-        append = self._deviceid.split('-')
-        return f"{self._name} {append[3].capitalize()} Brightness"
+        id_components = self._deviceid.split('-')
+        if len(id_components) > 3:
+            return f"{self._name} {id_components[3].capitalize()} Brightness"
+        return f"{self._name} Brightness"
 
     @property
     def unique_id(self):
