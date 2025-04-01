@@ -7,8 +7,8 @@ Display notifications from HomeAssistant to Tidbyt using this integration. Insta
 
 # Installation
 
-## Addon
-First, install the TidbytAssistant add-on which can be found here (You **MUST** install this add-on whether it's through the add-on store or as a regular Docker container for Push, Publish and Text services to work. If the add-on is not installed, the integration will not load.):
+## Addon (**START HERE**)
+First, install the TidbytAssistant add-on which can be found here (You **MUST** install this add-on whether it's through the add-on store or as a regular Docker container for Push, Publish and Text services to work. If the add-on is not installed, the integration will **NOT** load.):
 
 ```txt
 https://github.com/savdagod/ha-addons
