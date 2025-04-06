@@ -6,5 +6,5 @@
   "iot_class": "cloud_polling",
   "loggers": ["custom_components.tidbytassistant"],
   "single_config_entry": true,
-  "version": "2025.2.0"
+  "version": "2025.4.0"
 }

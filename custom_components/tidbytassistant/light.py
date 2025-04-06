@@ -1,7 +1,4 @@
 import logging
-import requests
-import math
-import time
 import aiohttp
 import asyncio
 from typing import Any
@@ -13,7 +10,6 @@ from homeassistant.components.light import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.const import STATE_ON, STATE_OFF, STATE_UNAVAILABLE
 
 BRIGHTNESS_SCALE = (1, 100)
 
@@ -71,7 +67,7 @@ class TidbytLight(LightEntity):
         """Return true if light is on."""
         return self._is_on
     
-    async def async_turn_on(self, **kwargs: any) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Instruct the light to turn on."""
         if ATTR_BRIGHTNESS in kwargs:
             brightness = round((kwargs[ATTR_BRIGHTNESS] / 255) * 100)
@@ -90,7 +86,7 @@ class TidbytLight(LightEntity):
                 else:
                     self._brightness = brightness
 
-    async def async_turn_off(self, **kwargs: any) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """do nothing"""
         
     async def async_update(self) -> None:
