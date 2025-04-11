@@ -24,7 +24,7 @@ push:
           - label: Garage Closed
             value: garageclosed
           - label: Garage Closing
-            value: garagclosing
+            value: garageclosing
           - label: Garage Open
             value: garageopen
           - label: Trash
