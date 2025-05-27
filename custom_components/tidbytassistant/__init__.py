@@ -139,7 +139,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             device[CONF_NAME] = retrievedname
 
     # Check if the add-on is installed and running if at least one device is not a Tronbyt
-    if not has_tidbyt:
+    if has_tidbyt:
         if not external_addon:
             addon_manager = _get_addon_manager(hass)
             addon_info = await addon_manager.async_get_addon_info()
