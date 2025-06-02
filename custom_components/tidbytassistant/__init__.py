@@ -124,7 +124,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     has_tidbyt = False
     devicelist = []
     for device in conf[CONF_DEVICE]:
-        if not device.get(CONF_TRONBYT, False):
+        if device.get(CONF_TRONBYT, False):
             has_tidbyt = True
             break
         if CONF_NAME in device:
